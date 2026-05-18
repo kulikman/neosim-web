@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FAQ — Common questions about NeoSIM</title>
+<link rel="stylesheet" href="styles.css" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is NeoSIM really free?","acceptedAnswer":{"@type":"Answer","text":"The eSIM itself is free. You only pay for data you actually use, billed per megabyte from your prepaid wallet."}},
+{"@type":"Question","name":"Will NeoSIM work on my phone?","acceptedAnswer":{"@type":"Answer","text":"Any eSIM-compatible device from 2018 onwards: iPhone XS+, Pixel 3+, Galaxy S20+, and most modern dual-SIM Android phones."}},
+{"@type":"Question","name":"Does my balance expire?","acceptedAnswer":{"@type":"Answer","text":"No. Top up once, use it across years and 150+ countries. Balance is fully refundable."}}
+]}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel" src="parts/SimplePage.jsx"></script>
+<script type="text/babel">
+const FAQ_GROUPS = [
+  { name: 'Getting started', items: [
+    { q: 'Is NeoSIM really free?', a: 'The eSIM itself is free — no setup fee, no monthly fee, no contract. You only pay for the megabytes you actually use, billed from a prepaid wallet you top up from $5.' },
+    { q: 'Will NeoSIM work on my phone?', a: 'Any eSIM-compatible device works: iPhone XS or newer, Google Pixel 3+, Samsung Galaxy S20+, and most modern dual-SIM Androids. We auto-detect during signup.' },
+    { q: 'How long does activation take?', a: 'Digital eSIM: instant. We email you the QR within seconds and your line is provisioned the moment you scan it. Physical SIM: 3–5 business days globally.' },
+  ]},
+  { name: 'Pricing & wallet', items: [
+    { q: 'How is data priced?', a: 'A flat per-GB rate per country, displayed before you arrive. No bundles, no daily caps, no hidden surcharges. You can see exact rates on the Coverage page.' },
+    { q: 'Does my balance expire?', a: 'Never. Top up once, use it across years and 150+ countries. Balance is fully refundable to your original payment method anytime.' },
+    { q: 'What are Miles?', a: 'Every top-up earns 3% in Miles, redeemable as free data. A $50 top-up gives you $51.50 of usable credit, no codes or minimums.' },
+  ]},
+  { name: 'Coverage & speeds', items: [
+    { q: 'Which carriers do you use?', a: 'NeoSIM connects to 500+ tier-1 networks worldwide via 2SkyMobile, our parent infrastructure provider with 14 years of MVNO experience.' },
+    { q: 'Is it 5G everywhere?', a: 'Where local carriers offer 5G to roaming partners — yes. Otherwise full 4G/LTE. The Coverage page tags every country with the highest tech you can expect.' },
+    { q: 'Can I tether?', a: 'Yes, hotspot is included on every plan in every country, no extra fee. Tethered MB count exactly the same as on-device MB.' },
+  ]},
+  { name: 'Support', items: [
+    { q: 'What if I get stuck abroad?', a: '24/7 in-app chat with humans, average response under 2 minutes. We can also remotely re-provision your eSIM if your carrier connection drops.' },
+    { q: 'Can I get a refund?', a: 'Unused balance is refundable any time, no questions. Used data is non-refundable but we credit failed sessions automatically.' },
+  ]},
+];
+
+function FAQItem({ q, a }) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <div className="glass" style={{ padding: 0, overflow: 'hidden' }}>
+      <button onClick={() => setOpen(!open)} style={{
+        width: '100%', padding: '24px 28px', textAlign: 'left',
+        background: 'transparent', border: 'none', color: '#fff',
+        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 16
+      }}>
+        <span style={{ flex: 1, fontWeight: 600, fontSize: 16 }}>{q}</span>
+        <span style={{
+          width: 32, height: 32, borderRadius: 999,
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid var(--border)',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          transform: open ? 'rotate(45deg)' : 'rotate(0)',
+          transition: 'transform .25s'
+        }}>
+          <I.Plus size={14} />
+        </span>
+      </button>
+      {open && (
+        <div style={{ padding: '0 28px 24px', color: 'var(--text-2)', fontSize: 14, lineHeight: 1.7, maxWidth: 720 }}>
+          {a}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FAQPage() {
+  return (
+    <SimplePage
+      currentPath="faq"
+      caption="FAQ"
+      title={<>Common <span className="gradient-text">questions</span></>}
+      subtitle="Can't find your answer? Real humans on chat reply in under 2 minutes, 24/7."
+      narrow
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 48, marginBottom: 60 }}>
+        {FAQ_GROUPS.map(g => (
+          <div key={g.name}>
+            <h2 className="h-3" style={{ margin: 0, marginBottom: 20 }}>{g.name}</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {g.items.map(it => <FAQItem key={it.q} {...it} />)}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="glass-strong" style={{ padding: 36, textAlign: 'center' }}>
+        <h3 className="h-4" style={{ margin: 0, marginBottom: 12 }}>Still have questions?</h3>
+        <p className="body-sm" style={{ marginBottom: 24 }}>Live chat or email — both reply in minutes, not days.</p>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a href="contact.html" className="btn btn-primary" style={{ height: 48 }}>Contact us <I.ArrowRight size={16} /></a>
+          <a href="get-esim.html" className="btn btn-ghost" style={{ height: 48 }}>Get free eSIM</a>
+        </div>
+      </div>
+    </SimplePage>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<FAQPage />);
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blog — NeoSIM</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="blog-data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel">
+const CATS = ['All', 'Guides', 'Tutorials', 'Destinations', 'Industry', 'Business', 'Tech'];
+
+function avatar(name) {
+  const initials = name.split(' ').map(p => p[0]).slice(0,2).join('').toUpperCase();
+  const hue = (name.charCodeAt(0) * 7) % 360;
+  return { initials, bg: `hsl(${hue}, 60%, 30%)`, fg: `hsl(${hue}, 80%, 80%)` };
+}
+
+function BlogIndex() {
+  const [cat, setCat] = React.useState('All');
+  const filtered = cat === 'All' ? POSTS : POSTS.filter(p => p.cat === cat);
+  const [feature, ...rest] = filtered;
+
+  return (
+    <CurrencyProvider>
+      <Nav currentPath="blog" />
+      <ExitIntent />
+      <section style={{ padding: '140px 0 60px', position: 'relative' }}>
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
+        <div className="aurora" style={{ opacity: 0.3 }} />
+        <div className="container" style={{ position: 'relative' }}>
+          <div className="caption" style={{ color: '#66b7ff', marginBottom: 16 }}>Field notes</div>
+          <h1 className="h-1" style={{ margin: 0, marginBottom: 16 }}>The <span className="gradient-text">NeoSIM</span> blog</h1>
+          <p className="lead" style={{ marginBottom: 40, maxWidth: 600 }}>
+            Travel data, eSIM tutorials, and the occasional industry exposé. Written by people who run the network.
+          </p>
+
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 40 }}>
+            {CATS.map(c => (
+              <button key={c} onClick={() => setCat(c)} className="pill" style={{
+                padding: '8px 16px', fontSize: 13, cursor: 'pointer',
+                background: cat === c ? '#fff' : 'rgba(255,255,255,0.04)',
+                color: cat === c ? '#000a17' : '#fff',
+                borderColor: cat === c ? '#fff' : 'rgba(255,255,255,0.08)',
+              }}>{c}</button>
+            ))}
+          </div>
+
+          {feature && (
+            <a href={`blog-post.html?slug=${feature.slug}`} className="glass-strong card-hover" style={{
+              display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 0, padding: 0, overflow: 'hidden',
+              marginBottom: 32, color: '#fff', textDecoration: 'none'
+            }}>
+              <div style={{
+                aspectRatio: '16/10', background: 'linear-gradient(135deg, rgba(0,127,255,0.3), rgba(62,224,162,0.15))',
+                position: 'relative', overflow: 'hidden'
+              }}>
+                <div style={{ position: 'absolute', inset: 0, opacity: 0.4 }} className="dot-grid" />
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 96, opacity: 0.6 }}>📊</div>
+                <span style={{ position: 'absolute', top: 24, left: 24, padding: '6px 12px', borderRadius: 999, background: 'rgba(0,5,15,0.7)', backdropFilter: 'blur(8px)', fontSize: 11, fontWeight: 700, color: '#66b7ff', border: '1px solid rgba(0,127,255,0.3)' }}>
+                  Featured · {feature.cat}
+                </span>
+              </div>
+              <div style={{ padding: 40, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <h2 className="h-2" style={{ margin: 0, marginBottom: 16 }}>{feature.title}</h2>
+                <p className="body-sm" style={{ marginBottom: 24 }}>{feature.excerpt}</p>
+                <div style={{ display: 'flex', gap: 14, fontSize: 13, color: 'var(--text-3)', alignItems: 'center' }}>
+                  <span>{feature.author}</span><span>·</span>
+                  <span>{feature.date}</span><span>·</span>
+                  <span><I.Clock size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{feature.read}</span>
+                </div>
+              </div>
+            </a>
+          )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }} className="blog-grid">
+            {rest.map(p => {
+              const a = avatar(p.author);
+              return (
+                <a key={p.slug} href={`blog-post.html?slug=${p.slug}`} className="glass card-hover" style={{
+                  padding: 0, overflow: 'hidden', color: '#fff', textDecoration: 'none',
+                  display: 'flex', flexDirection: 'column'
+                }}>
+                  <div style={{
+                    aspectRatio: '16/10', background: `linear-gradient(135deg, hsla(${(p.title.charCodeAt(0)*7)%360}, 60%, 35%, 0.4), rgba(10,15,30,0.6))`,
+                    position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}>
+                    <div style={{ position: 'absolute', inset: 0, opacity: 0.3 }} className="dot-grid" />
+                    <span style={{ position: 'absolute', top: 16, left: 16, padding: '4px 10px', borderRadius: 999, background: 'rgba(0,5,15,0.7)', fontSize: 11, fontWeight: 700, color: '#fff' }}>
+                      {p.cat}
+                    </span>
+                    <span style={{ fontSize: 56, opacity: 0.5 }}>
+                      {p.cat === 'Guides' ? '📘' : p.cat === 'Tutorials' ? '🛠' : p.cat === 'Destinations' ? '✈️' : p.cat === 'Industry' ? '📡' : p.cat === 'Business' ? '💼' : '⚡'}
+                    </span>
+                  </div>
+                  <div style={{ padding: 24, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <h3 className="h-4" style={{ margin: 0, marginBottom: 8 }}>{p.title}</h3>
+                    <p className="body-sm" style={{ marginBottom: 18, flex: 1 }}>{p.excerpt}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
+                      <div style={{ width: 28, height: 28, borderRadius: 999, background: a.bg, color: a.fg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700 }}>{a.initials}</div>
+                      <div style={{ flex: 1, fontSize: 12, color: 'var(--text-3)' }}>{p.author} · {p.date}</div>
+                      <span style={{ fontSize: 12, color: 'var(--text-3)' }}>{p.read}</span>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+      <Footer />
+      <style>{`
+        @media (max-width: 900px) { .blog-grid { grid-template-columns: 1fr 1fr !important; } }
+        @media (max-width: 640px) { .blog-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
+    </CurrencyProvider>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<BlogIndex />);
+</script>
+</body>
+</html>

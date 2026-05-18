@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Top up — NeoSIM</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel">
+function TopupPage() {
+  const presets = [5, 10, 25, 50, 100];
+  const [amount, setAmount] = React.useState(25);
+  const [method, setMethod] = React.useState('apple');
+  const miles = (amount * 0.03).toFixed(2);
+  const total = amount;
+  const credit = (parseFloat(amount) + parseFloat(miles)).toFixed(2);
+
+  return (
+    <>
+      <Nav currentPath="topup" />
+      <section style={{ padding: '140px 0 80px', minHeight: '100vh', position: 'relative' }}>
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
+        <div className="aurora" style={{ opacity: 0.4 }} />
+        <div className="container" style={{ position: 'relative', maxWidth: 1080 }}>
+          <a href="index.html" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13, marginBottom: 32 }}>
+            <I.ArrowLeft size={14} /> Back to home
+          </a>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 40 }} className="topup-grid">
+            <div>
+              <div className="caption" style={{ color: '#66b7ff', marginBottom: 16 }}>Wallet · Top up</div>
+              <h1 className="h-1" style={{ margin: 0, marginBottom: 16 }}>Add credit to <span className="gradient-text">your wallet</span></h1>
+              <p className="lead" style={{ marginBottom: 32, maxWidth: 480 }}>
+                Balance never expires. 3% Miles back on every top-up, redeemable as data.
+              </p>
+
+              {/* current balance card */}
+              <div className="glass-strong" style={{ padding: 28, marginBottom: 28, position: 'relative', overflow: 'hidden' }}>
+                <div style={{
+                  position: 'absolute', right: -60, top: -60, width: 220, height: 220, borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(0,127,255,0.3), transparent 60%)',
+                  filter: 'blur(20px)', pointerEvents: 'none'
+                }} />
+                <div style={{ position: 'relative' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+                    <div>
+                      <div className="mono" style={{ marginBottom: 4 }}>Current balance</div>
+                      <div style={{ fontSize: 44, fontWeight: 800, letterSpacing: '-1.2px' }}>$48.<span style={{ color: 'var(--text-3)' }}>27</span></div>
+                    </div>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 999, background: 'rgba(62,224,162,0.12)', color: 'var(--mint)', fontSize: 12, fontWeight: 600, border: '1px solid rgba(62,224,162,0.3)' }}>
+                      <span style={{ width: 6, height: 6, borderRadius: 999, background: 'currentColor' }} /> Active in France
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 24, paddingTop: 20, borderTop: '1px solid var(--border)' }}>
+                    <div>
+                      <div style={{ fontSize: 12, color: 'var(--text-3)' }}>This month</div>
+                      <div style={{ fontWeight: 700, fontSize: 16 }}>1.7 GB</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 12, color: 'var(--text-3)' }}>Avg / day</div>
+                      <div style={{ fontWeight: 700, fontSize: 16 }}>284 MB</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 12, color: 'var(--text-3)' }}>Miles earned</div>
+                      <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--mint)' }}>$4.18</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* amount picker */}
+              <div className="caption" style={{ marginBottom: 12 }}>1 · Choose amount</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 12 }}>
+                {presets.map(p => (
+                  <button key={p} onClick={() => setAmount(p)} style={{
+                    padding: '20px 0', borderRadius: 16, fontSize: 18, fontWeight: 700,
+                    background: amount === p ? 'rgba(0,127,255,0.15)' : 'rgba(255,255,255,0.02)',
+                    border: amount === p ? '1px solid rgba(0,127,255,0.5)' : '1px solid var(--border)',
+                    color: '#fff', cursor: 'pointer'
+                  }}>${p}</button>
+                ))}
+              </div>
+              <div className="field" style={{ marginBottom: 32 }}>
+                <span style={{ color: 'var(--text-3)', fontSize: 18 }}>$</span>
+                <input type="number" value={amount} onChange={e => setAmount(parseFloat(e.target.value) || 0)} placeholder="Custom amount" min="5" />
+                <span className="mono">USD</span>
+              </div>
+
+              {/* method */}
+              <div className="caption" style={{ marginBottom: 12 }}>2 · Payment method</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 32 }}>
+                {[
+                  { id: 'apple', i: <I.Apple size={20} />, t: 'Apple Pay' },
+                  { id: 'google', i: <I.Google size={20} />, t: 'Google Pay' },
+                  { id: 'card', i: <I.Wallet size={18} />, t: 'Card' },
+                  { id: 'crypto', i: <span style={{ fontWeight: 700, fontSize: 12 }}>USDT</span>, t: 'Crypto' },
+                ].map(m => (
+                  <button key={m.id} onClick={() => setMethod(m.id)} style={{
+                    padding: '16px 12px', borderRadius: 14,
+                    background: method === m.id ? 'rgba(0,127,255,0.12)' : 'rgba(255,255,255,0.02)',
+                    border: method === m.id ? '1px solid rgba(0,127,255,0.4)' : '1px solid var(--border)',
+                    color: '#fff', cursor: 'pointer',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8
+                  }}>
+                    {m.i}
+                    <span style={{ fontSize: 12 }}>{m.t}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* summary */}
+            <div>
+              <div style={{ position: 'sticky', top: 100 }}>
+                <div className="glass-strong" style={{ padding: 28 }}>
+                  <h3 className="h-4" style={{ margin: 0, marginBottom: 20 }}>Order summary</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 14, color: 'var(--text-2)' }}>Top up</span>
+                      <span className="mono" style={{ color: '#fff', fontSize: 14 }}>${amount.toFixed(2)}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 14, color: 'var(--mint)' }}>+ 3% Miles back</span>
+                      <span className="mono" style={{ color: 'var(--mint)', fontSize: 14 }}>+${miles}</span>
+                    </div>
+                  </div>
+                  <div style={{ paddingTop: 16, borderTop: '1px solid var(--border)', marginBottom: 16 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                      <span style={{ fontSize: 14, color: 'var(--text-2)' }}>Wallet credit</span>
+                      <span style={{ fontSize: 22, fontWeight: 700 }}>${credit}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 13, color: 'var(--text-3)' }}>You pay today</span>
+                      <span className="mono" style={{ color: 'var(--text-3)' }}>${total.toFixed(2)}</span>
+                    </div>
+                  </div>
+                  <button className="btn btn-primary" style={{ width: '100%', height: 56 }}>
+                    {method === 'apple' && <I.Apple size={18} />}
+                    {method === 'google' && <I.Google size={18} />}
+                    Pay ${total.toFixed(2)}
+                  </button>
+                  <div style={{ marginTop: 14, fontSize: 11, color: 'var(--text-3)', textAlign: 'center', lineHeight: 1.5 }}>
+                    🔒 Stripe Checkout · Refundable balance · No monthly fee
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 16, padding: 18, borderRadius: 14, background: 'rgba(62,224,162,0.06)', border: '1px solid rgba(62,224,162,0.2)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                    <I.Gift size={16} style={{ color: 'var(--mint)' }} />
+                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--mint)' }}>Miles never expire</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--text-2)' }}>
+                    Earn 3% on every top-up. Redeem as free data — 1 Mile = $1 of usage.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <Footer />
+      <style>{`
+        @media (max-width: 900px) { .topup-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<TopupPage />);
+</script>
+</body>
+</html>

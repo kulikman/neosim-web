@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>For business — NeoSIM</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel">
+function BizPage() {
+  const [seats, setSeats] = React.useState(50);
+  const [tripsPerYear, setTrips] = React.useState(4);
+  const [gbPerTrip, setGb] = React.useState(3);
+  const monthly = (seats * tripsPerYear * gbPerTrip * 4 / 12).toFixed(0); // GB/mo
+  const cost = (seats * tripsPerYear * gbPerTrip * 4).toFixed(0);
+  const savings = Math.round(cost * 6.5); // vs $30/GB roaming
+
+  return (
+    <CurrencyProvider>
+      <Nav currentPath="business" />
+      <ExitIntent />
+
+      {/* hero */}
+      <section style={{ padding: '140px 0 80px', position: 'relative' }}>
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
+        <div className="aurora" style={{ opacity: 0.4 }} />
+        <div className="container" style={{ position: 'relative' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 64, alignItems: 'center' }} className="biz-hero">
+            <div>
+              <div className="caption" style={{ color: '#66b7ff', marginBottom: 18 }}>NeoSIM for business</div>
+              <h1 className="h-1" style={{ margin: 0, marginBottom: 20 }}>
+                Travel data your CFO<br/><span className="gradient-text">won't yell about.</span>
+              </h1>
+              <p className="lead" style={{ marginBottom: 32, maxWidth: 540 }}>
+                One dashboard, every employee, every country. Pooled data, central billing, zero roaming surprises. Used by 600+ teams from 5-person startups to Fortune 500.
+              </p>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
+                <a href="#contact" className="btn btn-primary" style={{ height: 56, padding: '0 24px' }}>
+                  Talk to sales <I.ArrowRight size={16} />
+                </a>
+                <a href="#calc" className="btn btn-ghost" style={{ height: 56, padding: '0 24px' }}>
+                  See the savings
+                </a>
+              </div>
+              <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', fontSize: 13, color: 'var(--text-2)' }}>
+                <span>✓ SOC 2 Type II</span>
+                <span>✓ SAML SSO</span>
+                <span>✓ Net-30 invoicing</span>
+                <span>✓ SCIM provisioning</span>
+              </div>
+            </div>
+
+            <div className="glass-strong" style={{ padding: 32, position: 'relative' }}>
+              <div className="caption" style={{ color: '#66b7ff', marginBottom: 16 }}>Q3 2025 fleet · live demo</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24, paddingBottom: 20, borderBottom: '1px solid var(--border)' }}>
+                <div>
+                  <div style={{ fontSize: 13, color: 'var(--text-3)', marginBottom: 4 }}>Active eSIMs</div>
+                  <div className="metric-value" style={{ fontSize: 36 }}>247</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, color: 'var(--text-3)', marginBottom: 4 }}>This month</div>
+                  <div className="metric-value" style={{ fontSize: 36, color: 'var(--mint)' }}>$3.4k</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, color: 'var(--text-3)', marginBottom: 4 }}>vs roaming</div>
+                  <div className="metric-value" style={{ fontSize: 36, color: 'var(--mint)' }}>−84%</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {[
+                  { name: 'Aiko Tanaka', country: '🇯🇵 Tokyo', usage: '1.2 GB', status: 'active' },
+                  { name: 'Marco Rossi', country: '🇮🇹 Milan', usage: '0.8 GB', status: 'active' },
+                  { name: 'Sarah Chen', country: '🇸🇬 Singapore', usage: '2.4 GB', status: 'active' },
+                  { name: 'Lukas Müller', country: '🇩🇪 Berlin', usage: '0.4 GB', status: 'idle' },
+                ].map(r => (
+                  <div key={r.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', fontSize: 13 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: 999, background: r.status === 'active' ? 'var(--mint)' : 'var(--text-3)' }} />
+                    <span style={{ flex: 1, fontWeight: 600 }}>{r.name}</span>
+                    <span style={{ color: 'var(--text-3)' }}>{r.country}</span>
+                    <span className="mono" style={{ width: 56, textAlign: 'right' }}>{r.usage}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* features */}
+      <section style={{ padding: '40px 0 60px' }}>
+        <div className="container">
+          <h2 className="h-2" style={{ margin: 0, marginBottom: 8 }}>Everything finance and IT need.</h2>
+          <p className="body-sm" style={{ marginBottom: 40, maxWidth: 600 }}>Built for the way distributed teams actually travel — not the way carriers think they do.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="biz-grid">
+            {[
+              { i: <I.Users size={20}/>, t: 'Pooled data', d: '1 shared bucket across the team. No per-seat plans, no overages, no "who used too much" Slack threads.' },
+              { i: <I.Lock size={20}/>, t: 'SAML + SCIM', d: 'Provision and de-provision via Okta, Azure AD, or Google. Offboard a leaver and their eSIM dies in seconds.' },
+              { i: <I.FileText size={20}/>, t: 'Real receipts', d: 'Per-trip, per-employee, per-country line items. CSV export, NetSuite/Coupa hooks, GL coding.' },
+              { i: <I.Globe size={20}/>, t: '150+ countries', d: 'Same wholesale rates everywhere. No "high-cost destination" surcharge for sending people to Switzerland.' },
+              { i: <I.Shield size={20}/>, t: 'SOC 2 Type II', d: 'Full audit report under NDA. PCI-DSS for payments, GDPR-compliant data handling, EU-only data residency option.' },
+              { i: <I.Headphones size={20}/>, t: 'Named CSM', d: 'A real human in your timezone, not a ticket queue. SLA-backed response on plans over 50 seats.' },
+            ].map(c => (
+              <div key={c.t} className="glass card-hover" style={{ padding: 28 }}>
+                <span className="icon-chip" style={{ marginBottom: 18 }}>{c.i}</span>
+                <h3 className="h-4" style={{ margin: 0, marginBottom: 10 }}>{c.t}</h3>
+                <p className="body-sm" style={{ margin: 0 }}>{c.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* calculator */}
+      <section id="calc" style={{ padding: '60px 0' }}>
+        <div className="container">
+          <div className="glass-strong" style={{ padding: 48 }}>
+            <div className="caption" style={{ color: '#66b7ff', marginBottom: 12 }}>Savings calculator</div>
+            <h2 className="h-2" style={{ marginTop: 0, marginBottom: 32 }}>How much will you stop spending on roaming?</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }} className="calc-grid">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+                {[
+                  { l: 'Traveling employees', v: seats, set: setSeats, min: 5, max: 500, step: 5, suffix: 'people' },
+                  { l: 'International trips per person, per year', v: tripsPerYear, set: setTrips, min: 1, max: 24, step: 1, suffix: 'trips' },
+                  { l: 'Data per trip', v: gbPerTrip, set: setGb, min: 1, max: 20, step: 1, suffix: 'GB' },
+                ].map(s => (
+                  <div key={s.l}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <span style={{ fontSize: 14, color: 'var(--text-2)' }}>{s.l}</span>
+                      <span className="mono" style={{ fontWeight: 700 }}>{s.v} {s.suffix}</span>
+                    </div>
+                    <input type="range" min={s.min} max={s.max} step={s.step} value={s.v} onChange={e => s.set(+e.target.value)}
+                      style={{ width: '100%', accentColor: '#007FFF' }} />
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, padding: 32, borderRadius: 16, background: 'rgba(62,224,162,0.06)', border: '1px solid rgba(62,224,162,0.25)' }}>
+                <div>
+                  <div className="caption" style={{ color: 'var(--text-3)', marginBottom: 6 }}>Annual NeoSIM cost</div>
+                  <div className="metric-value" style={{ fontSize: 44, color: '#fff' }}>${cost.toLocaleString()}</div>
+                </div>
+                <div>
+                  <div className="caption" style={{ color: 'var(--text-3)', marginBottom: 6 }}>Annual savings vs roaming</div>
+                  <div className="metric-value" style={{ fontSize: 56, color: 'var(--mint)' }}>${savings.toLocaleString()}</div>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-3)' }}>vs. $30/GB blended carrier roaming · {monthly} GB pooled monthly avg</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* logos / proof */}
+      <section style={{ padding: '60px 0' }}>
+        <div className="container">
+          <div className="caption" style={{ color: 'var(--text-3)', marginBottom: 24, textAlign: 'center' }}>Companies using NeoSIM for business</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 16 }} className="logo-grid">
+            {['Atlas','Helix','Northwind','Procyon','Vega','Lumen','Caldera','Onyx','Foxtrot','Meridian','Stratus','Vellum'].map(b => (
+              <div key={b} style={{ height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 10, border: '1px solid var(--border)', fontSize: 14, fontWeight: 700, color: 'var(--text-2)', letterSpacing: '0.5px' }}>{b}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* contact */}
+      <section id="contact" style={{ padding: '60px 0 100px' }}>
+        <div className="container">
+          <div className="glass-strong" style={{ padding: 48, display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 48 }}>
+            <div>
+              <h2 className="h-2" style={{ marginTop: 0, marginBottom: 16 }}>Talk to sales</h2>
+              <p className="body-sm" style={{ marginBottom: 28 }}>30-minute call. We'll review your travel patterns and quote a pooled plan. No PDF deck.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, fontSize: 13, color: 'var(--text-2)' }}>
+                <div style={{ display: 'flex', gap: 10 }}><I.Mail size={16} style={{ color: '#66b7ff' }}/> business@neosim.io</div>
+                <div style={{ display: 'flex', gap: 10 }}><I.Phone size={16} style={{ color: '#66b7ff' }}/> +31 20 808 0303</div>
+                <div style={{ display: 'flex', gap: 10 }}><I.Clock size={16} style={{ color: '#66b7ff' }}/> Avg. response · 2h, M–F</div>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="field"><I.User size={16}/><input placeholder="Full name" /></div>
+              <div className="field"><I.Mail size={16}/><input placeholder="Work email" /></div>
+              <div className="field"><I.Briefcase size={16}/><input placeholder="Company" /></div>
+              <div className="field"><I.Users size={16}/><input placeholder="# of travelers" /></div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <textarea className="field" style={{ width: '100%', minHeight: 100, padding: 14, fontFamily: 'inherit' }} placeholder="Where do you travel most?" />
+              </div>
+              <button className="btn btn-primary" style={{ gridColumn: '1 / -1', height: 52 }}>Request a demo <I.ArrowRight size={16}/></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+      <style>{`
+        @media (max-width: 980px) {
+          .biz-hero, .calc-grid { grid-template-columns: 1fr !important; }
+          .biz-grid { grid-template-columns: 1fr !important; }
+          .logo-grid { grid-template-columns: repeat(3,1fr) !important; }
+        }
+      `}</style>
+    </CurrencyProvider>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<BizPage />);
+</script>
+</body>
+</html>

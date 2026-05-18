@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Coming Soon — NeoSIM</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel">
+
+function ComingSoonPage() {
+  const [email, setEmail] = React.useState('');
+  const [sent, setSent] = React.useState(false);
+
+  // Read feature name from URL param ?feature=...
+  const params = new URLSearchParams(window.location.search);
+  const feature = params.get('feature') || 'This feature';
+
+  const featureMap = {
+    'compatibility':    { label: 'Device Compatibility',  icon: <I.Smartphone size={32}/>, eta: 'Q3 2026' },
+    'app':              { label: 'NeoSIM App',             icon: <I.Apple size={32}/>,      eta: 'Q3 2026' },
+    'status':           { label: 'Network Status',         icon: <I.Signal size={32}/>,     eta: 'Q3 2026' },
+    'neo-companion':    { label: 'AI Trip Companion',      icon: <I.Globe size={32}/>,      eta: 'Q4 2026' },
+    'loyalty':          { label: 'NeoSIM Miles',           icon: <I.Gift size={32}/>,       eta: 'Q3 2026' },
+    'referral':         { label: 'Invite & Earn',          icon: <I.Share size={32}/>,      eta: 'Q3 2026' },
+    'family':           { label: 'Family Wallet',          icon: <I.Users size={32}/>,      eta: 'Q3 2026' },
+  };
+
+  const info = featureMap[feature] || { label: 'New features', icon: <I.Zap size={32}/>, eta: 'Q3 2026' };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email) setSent(true);
+  };
+
+  return (
+    <>
+      <Nav currentPath="coming-soon" />
+
+      <section style={{
+        position: 'relative', minHeight: '100vh',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden', background: '#00040c'
+      }}>
+        {/* Earth bg */}
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 0,
+          backgroundImage: 'url(assets/earth.jpg)',
+          backgroundSize: 'cover', backgroundPosition: 'center bottom',
+        }} />
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1,
+          background: 'linear-gradient(180deg, rgba(0,6,15,0.75) 0%, rgba(0,6,15,0.55) 50%, rgba(0,10,23,0.85) 100%)'
+        }} />
+        <div className="aurora" style={{ zIndex: 2, opacity: 0.6 }} />
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, zIndex: 2, opacity: 0.35 }} />
+
+        <div className="container" style={{ position: 'relative', zIndex: 3, textAlign: 'center', maxWidth: 640, padding: '140px 24px 80px' }}>
+
+          {/* Icon */}
+          <div style={{
+            width: 80, height: 80, borderRadius: 24, margin: '0 auto 32px',
+            background: 'rgba(0,127,255,0.12)', border: '1px solid rgba(0,127,255,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#66b7ff', boxShadow: '0 0 40px rgba(0,127,255,0.2)'
+          }}>
+            {info.icon}
+          </div>
+
+          {/* ETA badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '6px 16px', borderRadius: 999, marginBottom: 24,
+            background: 'rgba(62,224,162,0.10)', border: '1px solid rgba(62,224,162,0.3)',
+            color: 'var(--mint)', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em'
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--mint)', boxShadow: '0 0 8px var(--mint)' }} />
+            {info.eta}
+          </div>
+
+          <h1 className="h-1" style={{ margin: '0 0 16px' }}>
+            {info.label}<br/>
+            <span className="gradient-text">скоро.</span>
+          </h1>
+
+          <p className="lead" style={{ marginBottom: 48, maxWidth: 480, margin: '0 auto 48px' }}>
+            Мы работаем над этим. Оставьте email — сообщим первыми, когда откроется.
+          </p>
+
+          {/* Email form */}
+          {!sent ? (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 10, maxWidth: 440, margin: '0 auto 32px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <div className="field" style={{ flex: 1, minWidth: 220 }}>
+                <I.Mail size={16} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary" style={{ height: 52, paddingLeft: 20, paddingRight: 24, flexShrink: 0 }}>
+                Notify me <I.ArrowRight size={16}/>
+              </button>
+            </form>
+          ) : (
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 12,
+              padding: '14px 28px', borderRadius: 999, marginBottom: 32,
+              background: 'rgba(62,224,162,0.10)', border: '1px solid rgba(62,224,162,0.3)'
+            }}>
+              <I.Check size={18} style={{ color: 'var(--mint)' }} strokeWidth={2.5}/>
+              <span style={{ fontWeight: 600, color: 'var(--mint)' }}>You're on the list — we'll be in touch.</span>
+            </div>
+          )}
+
+          {/* Back link */}
+          <div>
+            <a href="index.html" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              color: 'var(--text-3)', fontSize: 14, transition: 'color .2s'
+            }}
+            onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}>
+              <I.ArrowLeft size={14}/> Back to home
+            </a>
+          </div>
+
+          {/* Progress dots */}
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 64 }}>
+            {['Design', 'Build', 'Test', 'Launch'].map((s,i) => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                <div style={{
+                  width: 10, height: 10, borderRadius: 999,
+                  background: i === 1 ? '#007fff' : i === 0 ? 'var(--mint)' : 'rgba(255,255,255,0.15)',
+                  boxShadow: i === 1 ? '0 0 12px #007fff' : i === 0 ? '0 0 10px var(--mint)' : 'none'
+                }} />
+                <span style={{ fontSize: 10, color: i < 2 ? 'var(--text-2)' : 'var(--text-3)' }}>{s}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<ComingSoonPage />);
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About NeoSIM — built on 14 years of carrier infrastructure</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel" src="parts/SimplePage.jsx"></script>
+<script type="text/babel">
+const NUMBERS = [
+  { n: '14', l: 'Years of carrier ops', s: 'via 2SkyMobile' },
+  { n: '500+', l: 'Tier-1 carriers', s: 'native partnerships' },
+  { n: '150+', l: 'Countries live', s: 'with 5G where available' },
+  { n: '99.96%', l: 'Service uptime', s: 'rolling 12 months' },
+];
+const PRINCIPLES = [
+  { i: <I.DollarSign size={20} />, t: 'Pay for what you use', d: 'Per-MB billing, transparent rates, balance that never expires. No bundles you have to guess at.' },
+  { i: <I.Lock size={20} />, t: 'Privacy by default', d: 'GDPR. ISO 27001. eKYC only when required by law. We never resell traffic data.' },
+  { i: <I.Zap size={20} />, t: 'Instant by design', d: 'Provisioning in under 60 seconds. Top-ups credited the moment Stripe confirms. Support measured in minutes.' },
+];
+
+function About() {
+  return (
+    <SimplePage
+      currentPath="about"
+      caption="About"
+      title={<>Mobile data should be <span className="gradient-text">honest</span>.</>}
+      subtitle="NeoSIM is the consumer-facing brand of 2SkyMobile, a tier-1 mobile virtual network operator with 14 years of carrier-grade infrastructure across 6 continents."
+    >
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 80 }} className="ab-stats">
+        {NUMBERS.map(x => (
+          <div key={x.l} className="glass" style={{ padding: 28 }}>
+            <div style={{ fontSize: 44, fontWeight: 800, letterSpacing: '-1.5px', marginBottom: 4 }}>{x.n}</div>
+            <div style={{ fontSize: 14, fontWeight: 600 }}>{x.l}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 4 }}>{x.s}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginBottom: 80 }}>
+        <h2 className="h-2" style={{ margin: 0, marginBottom: 32 }}>Why we exist</h2>
+        <p className="body" style={{ maxWidth: 700, marginBottom: 16 }}>
+          Roaming has been broken for two decades. Carriers learned that travelers were a captive audience and built pricing around that — opaque day-passes, surprise bills, dead zones in the towns you actually wanted to visit.
+        </p>
+        <p className="body" style={{ maxWidth: 700, marginBottom: 16 }}>
+          eSIM technology removed the physical barrier. The economics still hadn't caught up. We built NeoSIM to fix that — direct GSMA membership, native carrier deals, transparent per-MB pricing, and a wallet that respects your money.
+        </p>
+        <p className="body" style={{ maxWidth: 700 }}>
+          Sit on top of 2SkyMobile's existing 500+ carrier integrations and you skip the years of relationship-building most travel-eSIMs are still doing in their first round of funding.
+        </p>
+      </div>
+
+      <div style={{ marginBottom: 80 }}>
+        <h2 className="h-2" style={{ margin: 0, marginBottom: 32 }}>Operating principles</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="ab-stats">
+          {PRINCIPLES.map(p => (
+            <div key={p.t} className="glass" style={{ padding: 28 }}>
+              <span className="icon-chip" style={{ marginBottom: 16 }}>{p.i}</span>
+              <h3 className="h-4" style={{ margin: 0, marginBottom: 8 }}>{p.t}</h3>
+              <p className="body-sm" style={{ margin: 0 }}>{p.d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="glass-strong" style={{ padding: 48 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 32, alignItems: 'center' }}>
+          <div>
+            <h3 className="h-3" style={{ margin: 0, marginBottom: 12 }}>Built on infrastructure that's been quietly carrying calls for 14 years.</h3>
+            <p className="body-sm" style={{ margin: 0, maxWidth: 540 }}>
+              GSMA member · ISO 27001 certified · GDPR &amp; eKYC compliant · Headquartered in Tallinn with NOCs in Frankfurt, Singapore, and São Paulo.
+            </p>
+          </div>
+          <a href="get-esim.html" className="btn btn-primary" style={{ height: 56, padding: '0 28px' }}>Get free eSIM <I.ArrowRight size={16} /></a>
+        </div>
+      </div>
+
+      <style>{`@media (max-width: 760px){ .ab-stats{ grid-template-columns: 1fr 1fr !important; } }`}</style>
+    </SimplePage>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<About />);
+</script>
+</body>
+</html>

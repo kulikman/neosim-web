@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Terms of Service — NeoSIM</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel" src="parts/SimplePage.jsx"></script>
+<script type="text/babel" src="parts/PolicyPage.jsx"></script>
+<script type="text/babel">
+const SECTIONS = [
+  { t: 'The deal',
+    short: 'Free eSIM, free signup, prepaid wallet. No contract, cancel anytime by ignoring the service.',
+    long: 'NeoSIM provides global eSIM connectivity on a prepaid basis. There is no minimum term, no monthly fee, and no cancellation penalty. Your account can be closed at any time and unused balance is fully refundable.' },
+  { t: 'Acceptable use',
+    short: 'No spam, no fraud, no commercial gateway use. Personal travel data is the use case.',
+    long: 'You agree not to use NeoSIM for: bulk SMS or robocalling, SIM-box gateway operations, fraud, distribution of malware, or any activity that violates the laws of the country you are connecting from. We reserve the right to suspend service for clear policy violations with 24-hour notice where safe to do so.' },
+  { t: 'Pricing & billing',
+    short: 'Per-MB rates per country are shown before connection. Wallet is debited per session. Balance never expires.',
+    long: 'Rates are quoted in USD and shown on the Coverage page and in-app before each session. Sessions are metered to the nearest MB. Charges are deducted from your wallet balance. We will notify you when balance falls below $2 and again at $0.50.' },
+  { t: 'Refunds',
+    short: 'Unused balance is fully refundable. Used data is not.',
+    long: 'You may request a full refund of unused wallet balance at any time, no questions, returned to your original payment method within 10 business days. Used data is non-refundable except where caused by service failure on our side, in which case credits are issued automatically.' },
+  { t: 'Service limits',
+    short: 'We aim for 99.9% uptime but cannot control every local carrier on Earth.',
+    long: 'NeoSIM depends on partner carriers. Outages, congestion, or regulatory changes in a specific country may affect service. We commit to a 99.9% target SLA for our own provisioning and billing infrastructure. We do not warrant uninterrupted service in every country at every moment.' },
+  { t: 'Liability',
+    short: 'Our liability is capped at the amount you have paid us in the prior 12 months.',
+    long: 'To the maximum extent permitted by law, our aggregate liability for any claim arising from your use of NeoSIM is limited to the total amount paid by you in the 12 months preceding the claim. We are not liable for indirect, incidental, or consequential damages.' },
+  { t: 'Governing law',
+    short: 'Estonian law, with consumer protections of your home country preserved.',
+    long: 'These terms are governed by Estonian law. Consumer protection rights granted to you by the law of your country of residence are not affected. Disputes may be resolved through the EU Online Dispute Resolution platform.' },
+];
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <PolicyPage title={<>Terms of <span className="gradient-text">Service</span></>} updated="April 1, 2026" currentPath="terms" sections={SECTIONS} />
+);
+</script>
+</body>
+</html>

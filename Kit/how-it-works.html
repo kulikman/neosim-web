@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How NeoSIM works — from order to online in 2 minutes</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel">
+
+const HOW_STEPS = [
+  { n: '01', t: 'Sign up in 60 seconds', d: 'Sign up in seconds. No credit card required — get $2.50 free on your first connection abroad. Free eSIM delivered instantly to your email.', icon: <I.Mail size={22}/>, tags: ['Free signup', 'GDPR-compliant', 'No credit check'] },
+  { n: '02', t: 'Install your eSIM',     d: 'Tap once on iOS 17.4+, scan a QR, or enter manual SM-DP+ details. Your home number stays active — NeoSIM runs as a second line.', icon: <I.QrCode size={22}/>, tags: ['1-tap iOS install', 'Universal QR fallback', '3-min setup'] },
+  { n: '03', t: 'Top up your wallet',    d: 'Add as little as $5. Apple Pay, Google Pay, card, or USDT. 3% Miles back on every top-up. Balance never expires.', icon: <I.Wallet size={22}/>, tags: ['$5 minimum', '3% Miles back', 'Never expires'] },
+  { n: '04', t: 'Land. Connect. Done.',  d: 'Top up the wallet, use what you need. Pay per GB — not per day. Set a daily cap so you\'re never surprised. Balance never expires.', icon: <I.Plane size={22}/>, tags: ['Native 4G/5G', 'Auto-connect', 'Pay per GB'] },
+];
+
+function HowItWorksPage() {
+  const [active, setActive] = React.useState(0);
+
+  return (
+    <>
+      <Nav currentPath="how-it-works" />
+
+      {/* ── HERO ── */}
+      <section style={{ position: 'relative', paddingTop: 160, paddingBottom: 80, overflow: 'hidden', background: '#00040c' }}>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, backgroundImage: 'url(assets/earth.jpg)', backgroundSize: 'cover', backgroundPosition: 'center bottom' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(0,6,15,0.7) 0%, rgba(0,6,15,0.45) 50%, rgba(0,10,23,0.85) 100%)' }} />
+        <div className="aurora" style={{ zIndex: 2, opacity: 0.5 }} />
+        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 180, background: 'linear-gradient(180deg, transparent, var(--bg-deep))', zIndex: 2 }} />
+
+        <div className="container" style={{ position: 'relative', zIndex: 3 }}>
+          <a href="index.html" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13, marginBottom: 36 }}>
+            <I.ArrowLeft size={14}/> Back to home
+          </a>
+          <div className="caption" style={{ color: '#66b7ff', marginBottom: 16 }}>How it works</div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+            <h1 className="h-display" style={{ margin: 0, maxWidth: 780, lineHeight: 1.08 }}>
+              From order to online<br/>
+              <span className="gradient-text">in under 2 minutes.</span>
+            </h1>
+            <div style={{ display: 'flex', gap: 10, paddingBottom: 8 }}>
+              <a href="get-esim.html" className="btn btn-primary" style={{ height: 52 }}>Get free eSIM <I.ArrowRight size={16}/></a>
+              <a href="coverage.html" className="btn btn-ghost" style={{ height: 52 }}>Browse coverage</a>
+            </div>
+          </div>
+          <p className="lead" style={{ marginTop: 24, maxWidth: 600 }}>
+            No SIM swap, no waiting at airport kiosks, no roaming surprises.<br/>Four steps, then you forget it exists.
+          </p>
+        </div>
+      </section>
+
+      {/* ── INTERACTIVE STEPS ── */}
+      <section style={{ position: 'relative', padding: '80px 0 100px', overflow: 'hidden' }}>
+        {/* giant background word */}
+        <div style={{
+          position: 'absolute', left: '50%', top: '50%',
+          transform: 'translate(-50%, -50%)',
+          fontSize: 'clamp(100px, 16vw, 220px)',
+          fontWeight: 900, letterSpacing: '-0.04em',
+          color: 'rgba(255,255,255,0.022)',
+          whiteSpace: 'nowrap', pointerEvents: 'none', userSelect: 'none', lineHeight: 1,
+        }}>NEOSIM</div>
+
+        <div className="container" style={{ position: 'relative' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'start' }} className="hiw-page-grid">
+
+            {/* Left: step list */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {HOW_STEPS.map((s, i) => (
+                <button key={i} onClick={() => setActive(i)} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 24,
+                  padding: '28px 32px', borderRadius: 20, textAlign: 'left',
+                  background: active === i ? 'rgba(0,127,255,0.1)' : 'transparent',
+                  border: active === i ? '1px solid rgba(0,127,255,0.3)' : '1px solid transparent',
+                  cursor: 'pointer', transition: 'all 0.25s ease', width: '100%',
+                }}
+                onMouseEnter={e => { if (active !== i) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
+                onMouseLeave={e => { if (active !== i) e.currentTarget.style.background = 'transparent'; }}>
+                  <div style={{
+                    fontSize: 13, fontWeight: 700, letterSpacing: '0.05em',
+                    color: active === i ? '#66b7ff' : 'rgba(255,255,255,0.25)',
+                    minWidth: 28, paddingTop: 4, transition: 'color 0.25s',
+                  }}>{s.n}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                      <span style={{ color: active === i ? '#66b7ff' : 'rgba(255,255,255,0.25)', transition: 'color 0.25s' }}>{s.icon}</span>
+                      <div style={{ fontSize: 20, fontWeight: 700, color: active === i ? '#fff' : 'rgba(255,255,255,0.55)', transition: 'color 0.25s' }}>{s.t}</div>
+                    </div>
+                    <div style={{ fontSize: 14, color: active === i ? 'var(--text-2)' : 'rgba(255,255,255,0.25)', lineHeight: 1.6, transition: 'color 0.25s', maxWidth: 380 }}>{s.d}</div>
+                  </div>
+                  <div style={{ marginLeft: 'auto', paddingTop: 4, opacity: active === i ? 1 : 0, transition: 'opacity 0.25s', color: '#66b7ff', flexShrink: 0 }}>
+                    <I.ArrowRight size={18}/>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Right: active step card */}
+            <div style={{ position: 'sticky', top: 110 }}>
+              {HOW_STEPS.map((s, i) => (
+                <div key={i} style={{ display: active === i ? 'block' : 'none', animation: 'stepFadeIn 0.35s ease' }}>
+                  <div className="glass-strong" style={{ padding: 48, minHeight: 340, position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', right: -80, top: -80, width: 320, height: 320, borderRadius: '50%',
+                      background: 'radial-gradient(circle, rgba(0,127,255,0.22), transparent 60%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+                    <div style={{ position: 'relative' }}>
+                      <div style={{
+                        fontSize: 96, fontWeight: 900, lineHeight: 1, letterSpacing: '-4px', marginBottom: 24,
+                        background: 'linear-gradient(135deg, #007fff, rgba(0,127,255,0.3))',
+                        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                      }}>{s.n}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                        <span className="icon-chip" style={{ width: 44, height: 44, borderRadius: 12 }}>{s.icon}</span>
+                        <h2 style={{ fontSize: 28, fontWeight: 800, margin: 0, letterSpacing: '-0.5px' }}>{s.t}</h2>
+                      </div>
+                      <p style={{ fontSize: 16, color: 'var(--text-2)', lineHeight: 1.7, margin: '0 0 28px', maxWidth: 440 }}>{s.d}</p>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 32 }}>
+                        {s.tags.map((tag, j) => (
+                          <span key={j} style={{ padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 600, background: 'rgba(0,127,255,0.1)', border: '1px solid rgba(0,127,255,0.25)', color: '#9bc9ff' }}>{tag}</span>
+                        ))}
+                      </div>
+                      {/* progress bar */}
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        {HOW_STEPS.map((_,j) => (
+                          <div key={j} onClick={() => setActive(j)} style={{
+                            flex: j === i ? 3 : 1, height: 3, borderRadius: 999, cursor: 'pointer',
+                            background: j <= i ? 'linear-gradient(90deg, #007fff, #3ee0a2)' : 'rgba(255,255,255,0.1)',
+                            transition: 'flex 0.4s ease',
+                          }} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <style>{`
+          @keyframes stepFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+          @media (max-width: 900px) { .hiw-page-grid { grid-template-columns: 1fr !important; } }
+        `}</style>
+      </section>
+
+      {/* ── DAILY CAP CALLOUT ── */}
+      <section style={{ paddingBottom: 80 }}>
+        <div className="container">
+          <div style={{ padding: '24px 32px', borderRadius: 18, background: 'rgba(62,224,162,0.06)', border: '1px solid rgba(62,224,162,0.2)', display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
+            <span style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(62,224,162,0.12)', color: 'var(--mint)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <I.Shield size={20}/>
+            </span>
+            <div style={{ flex: 1, minWidth: 240 }}>
+              <span style={{ fontWeight: 700, color: 'var(--mint)', fontSize: 15 }}>Daily Cap — </span>
+              <span style={{ fontSize: 14, color: 'var(--text-2)' }}>Set a daily spending limit in app settings. When reached, speed drops to 64 kbps — you stay connected, never cut off. Resets midnight UTC.</span>
+            </div>
+            <a href="get-esim.html" style={{ fontSize: 13, fontWeight: 600, color: 'var(--mint)', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              Try it free <I.ArrowRight size={14}/>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BOTTOM CTA ── */}
+      <section style={{ paddingBottom: 120, position: 'relative', overflow: 'hidden' }}>
+        <div className="aurora" style={{ opacity: 0.4 }} />
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, opacity: 0.35 }} />
+        <div className="container" style={{ position: 'relative' }}>
+          <div className="glass-strong" style={{
+            padding: '64px 56px', position: 'relative', overflow: 'hidden',
+            background: 'linear-gradient(135deg, rgba(0,127,255,0.18), rgba(0,127,255,0.04))',
+            border: '1px solid rgba(0,127,255,0.3)', textAlign: 'center'
+          }}>
+            <div style={{ position: 'absolute', left: '50%', top: -120, transform: 'translateX(-50%)', width: 480, height: 480, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(0,127,255,0.3), transparent 60%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+            <div style={{ position: 'relative' }}>
+              <h2 className="h-1" style={{ margin: '0 0 16px' }}>Ready in less time<br/><span className="gradient-text">than your coffee order.</span></h2>
+              <p className="lead" style={{ marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
+                Free eSIM. Free signup. <span style={{ color: 'var(--mint)' }}>$2.50 welcome bonus</span> on first connection. Pay only for the GB you use.
+              </p>
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                <a href="get-esim.html" className="btn btn-primary" style={{ height: 56, padding: '0 32px', fontSize: 16 }}>
+                  Get my free eSIM <I.ArrowRight size={18}/>
+                </a>
+                <a href="coverage.html" className="btn btn-ghost" style={{ height: 56, padding: '0 28px', fontSize: 16 }}>
+                  Browse coverage
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<HowItWorksPage />);
+</script>
+</body>
+</html>

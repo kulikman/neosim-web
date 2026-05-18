@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Article — NeoSIM blog</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="blog-data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel">
+function BlogPost() {
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('slug') || 'esim-vs-roaming-2026';
+  const post = POSTS.find(p => p.slug === slug) || POSTS[0];
+  const body = post.body || [post.excerpt, "Full article coming soon. In the meantime, here's the executive summary above. Subscribe to the newsletter for the full version when it ships next week."];
+  const initials = post.author.split(' ').map(p=>p[0]).join('');
+
+  return (
+    <CurrencyProvider>
+      <Nav currentPath="blog" />
+      <ExitIntent />
+      <section style={{ padding: '140px 0 60px', position: 'relative' }}>
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, opacity: 0.4 }} />
+        <div className="aurora" style={{ opacity: 0.3 }} />
+        <div className="container" style={{ position: 'relative', maxWidth: 760 }}>
+          <a href="blog.html" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13, marginBottom: 32 }}>
+            <I.ArrowLeft size={14} /> All articles
+          </a>
+          <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center', fontSize: 13, color: 'var(--text-3)' }}>
+            <span style={{ padding: '4px 12px', borderRadius: 999, background: 'rgba(0,127,255,0.12)', color: '#66b7ff', fontWeight: 700, fontSize: 11 }}>{post.cat}</span>
+            <span>{post.date}</span><span>·</span>
+            <span><I.Clock size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />{post.read} read</span>
+          </div>
+          <h1 className="h-1" style={{ margin: 0, marginBottom: 24 }}>{post.title}</h1>
+          <p className="lead" style={{ marginBottom: 36 }}>{post.excerpt}</p>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingBottom: 32, borderBottom: '1px solid var(--border)', marginBottom: 40 }}>
+            <div style={{ width: 48, height: 48, borderRadius: 999, background: 'linear-gradient(135deg,#1a4080,#0a1830)', color: '#66b7ff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700 }}>{initials}</div>
+            <div>
+              <div style={{ fontWeight: 700 }}>{post.author}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-3)' }}>{post.authorRole || 'NeoSIM team'}</div>
+            </div>
+          </div>
+
+          <div style={{
+            aspectRatio: '16/9', borderRadius: 20, marginBottom: 40,
+            background: 'linear-gradient(135deg, rgba(0,127,255,0.3), rgba(62,224,162,0.15))',
+            position: 'relative', overflow: 'hidden',
+            display: 'flex', alignItems: 'center', justifyContent: 'center'
+          }}>
+            <div style={{ position: 'absolute', inset: 0, opacity: 0.4 }} className="dot-grid" />
+            <span style={{ fontSize: 120, opacity: 0.6 }}>📊</span>
+          </div>
+
+          <article style={{ fontSize: 16, lineHeight: 1.8, color: 'var(--text-1)' }}>
+            {body.map((para, i) => (
+              <p key={i} style={{ marginBottom: 24 }}>{para}</p>
+            ))}
+          </article>
+
+          <div className="glass-strong" style={{ padding: 32, marginTop: 56 }}>
+            <h3 className="h-4" style={{ margin: 0, marginBottom: 12 }}>Get articles like this in your inbox</h3>
+            <p className="body-sm" style={{ marginBottom: 20 }}>One email a month. No spam, no upsells. Just data and the occasional rant.</p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <div className="field" style={{ flex: 1, minWidth: 220 }}>
+                <I.Mail size={16} />
+                <input placeholder="your@email.com" />
+              </div>
+              <button className="btn btn-primary" style={{ height: 48 }}>Subscribe <I.ArrowRight size={14} /></button>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 56 }}>
+            <h3 className="h-4" style={{ margin: 0, marginBottom: 20 }}>More articles</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {POSTS.filter(p => p.slug !== slug).slice(0, 3).map(p => (
+                <a key={p.slug} href={`blog-post.html?slug=${p.slug}`} className="glass card-hover" style={{ padding: 20, display: 'flex', gap: 14, alignItems: 'center', color: '#fff', textDecoration: 'none' }}>
+                  <span style={{ fontSize: 28 }}>{p.cat === 'Guides' ? '📘' : p.cat === 'Tutorials' ? '🛠' : p.cat === 'Destinations' ? '✈️' : p.cat === 'Industry' ? '📡' : p.cat === 'Business' ? '💼' : '⚡'}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 2 }}>{p.title}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-3)' }}>{p.cat} · {p.read}</div>
+                  </div>
+                  <I.ArrowRight size={16} style={{ color: 'var(--text-3)' }} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </CurrencyProvider>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<BlogPost />);
+</script>
+</body>
+</html>

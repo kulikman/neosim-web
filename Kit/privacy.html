@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy Policy — NeoSIM</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel" src="parts/SimplePage.jsx"></script>
+<script type="text/babel" src="parts/PolicyPage.jsx"></script>
+<script type="text/babel">
+const SECTIONS = [
+  { t: 'What we collect',
+    short: 'Email, name, phone IMEI for compatibility, and per-MB usage. Nothing more than required to run the service.',
+    long: 'When you sign up we collect your email and full name. During eSIM provisioning we collect device IMEI to generate your activation profile. We log per-MB usage by country to bill your wallet correctly. We do not collect contact lists, browsing history, or precise location.' },
+  { t: 'Why we collect it',
+    short: 'To provision your line, bill correctly, and meet legal obligations. That is all.',
+    long: 'Lawful bases: contractual necessity for provisioning and billing, legal obligation for KYC where required by national regulators, legitimate interest for fraud prevention and service improvement.' },
+  { t: 'Who we share with',
+    short: 'Carrier partners (only what they need to route traffic) and Stripe for payments. No advertisers. Ever.',
+    long: 'Local carrier partners receive your activation profile to route traffic. Stripe receives payment metadata to process charges. Sub-processors are listed at neosim.com/sub-processors and updated 30 days before any change.' },
+  { t: 'Your rights under GDPR',
+    short: 'Export, correct, or delete your data anytime. We respond within 30 days.',
+    long: 'You can exercise rights to access, rectification, erasure, restriction, portability, and objection. Email privacy@neosim.com. We respond within 30 days as required by Article 12. EU users have the right to lodge complaints with their national DPA.' },
+  { t: 'Data retention',
+    short: 'Active account data: as long as you have an account. Billing records: 7 years per EU law. Usage logs: 6 months.',
+    long: 'After account deletion, we retain billing records for 7 years to comply with EU accounting directives. Aggregated, anonymized usage statistics may be retained indefinitely. Network signaling logs are purged after 6 months.' },
+  { t: 'Security',
+    short: 'ISO 27001 certified. End-to-end encryption. Annual third-party penetration testing.',
+    long: 'We are ISO 27001:2022 certified. All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We perform annual penetration tests via NCC Group. Incident response is published per GDPR Article 33 within 72 hours of confirmed breach.' },
+];
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <PolicyPage title={<>Privacy <span className="gradient-text">Policy</span></>} updated="April 1, 2026" currentPath="privacy" sections={SECTIONS} />
+);
+</script>
+</body>
+</html>

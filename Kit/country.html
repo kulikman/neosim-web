@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>eSIM for travelers — NeoSIM</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel">
+// Country-specific SEG content layer (would be MDX/CMS in production)
+const COUNTRY_SEG = {
+  JP: { trip: 'Japan', city: 'Tokyo', tip: 'Buy your eSIM before leaving — Narita arrival WiFi is unreliable past midnight.', neighborhoods: ['Shinjuku', 'Shibuya', 'Asakusa', 'Akihabara', 'Ginza'], avgGB: '1.5–2 GB', currency: 'JPY', highlights: ['Native 5G in 9 carriers', 'Works on Shinkansen tunnels via NTT', 'Roaming-grade IPv6'] },
+  US: { trip: 'the US', city: 'New York', tip: 'T-Mobile gives you the strongest 5G in NYC; AT&T wins in suburbs.', neighborhoods: ['Manhattan', 'Brooklyn', 'San Francisco', 'LA', 'Chicago'], avgGB: '3 GB', currency: 'USD', highlights: ['mmWave 5G in 12 metros', 'Hotspot included', 'eSIM Quick Transfer support'] },
+  TH: { trip: 'Thailand', city: 'Bangkok', tip: 'AIS coverage on the islands beats DTAC. Rural spots default to TrueMove.', neighborhoods: ['Bangkok', 'Phuket', 'Chiang Mai', 'Krabi', 'Koh Samui'], avgGB: '2 GB', currency: 'THB', highlights: ['5G in central Bangkok', 'Island coverage on AIS', 'No KYC required'] },
+  GB: { trip: 'the UK', city: 'London', tip: 'Vodafone has the cleanest London Underground coverage as of late 2025.', neighborhoods: ['London', 'Edinburgh', 'Manchester', 'Bath', 'Liverpool'], avgGB: '2 GB', currency: 'GBP', highlights: ['5G in 50+ towns', 'Tube coverage on partnered stations', 'EU-roam included for short hops'] },
+  ES: { trip: 'Spain', city: 'Barcelona', tip: 'Movistar wins in Madrid, Orange wins along the Costa del Sol.', neighborhoods: ['Madrid', 'Barcelona', 'Seville', 'Valencia', 'Granada'], avgGB: '1.8 GB', currency: 'EUR', highlights: ['5G across 30+ cities', 'Strong Catalonia coastal coverage', 'EU roaming bundled'] },
+  IT: { trip: 'Italy', city: 'Rome', tip: 'TIM still wins in the north, Vodafone is more reliable in Sicily.', neighborhoods: ['Rome', 'Milan', 'Florence', 'Venice', 'Naples'], avgGB: '1.5 GB', currency: 'EUR', highlights: ['5G in major cities', 'Train coverage Rome → Milan', 'Vatican signal works'] },
+};
+
+function CountryPage() {
+  const params = new URLSearchParams(window.location.search);
+  const code = (params.get('country') || 'JP').toUpperCase();
+  const country = COUNTRIES.find(c => c.code === code) || COUNTRIES[0];
+  const seg = COUNTRY_SEG[country.code] || { trip: country.name, city: country.name, tip: 'Native 4G/5G via tier-1 partners.', neighborhoods: [], avgGB: '2 GB', highlights: [] };
+  const dailyCost = (country.price * 200).toFixed(2); // ~200MB/day
+  const weekCost = (country.price * 200 * 7).toFixed(2);
+
+  // FAQPage JSON-LD specific to country
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      { "@type": "Question", name: `How much does an eSIM cost in ${country.name}?`,
+        acceptedAnswer: { "@type": "Answer", text: `NeoSIM charges $${(country.price*1024).toFixed(2)} per GB in ${country.name} — about $${dailyCost} per day for typical use, or $${weekCost} per week.` } },
+      { "@type": "Question", name: `Does NeoSIM work on 5G in ${country.name}?`,
+        acceptedAnswer: { "@type": "Answer", text: country.tech.includes('5G') ? `Yes — full 5G via ${country.networks}.` : `4G/LTE only via ${country.networks}.` } },
+    ]
+  };
+
+  React.useEffect(() => {
+    document.title = `eSIM for ${country.name} — NeoSIM`;
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify(faqLd);
+    document.head.appendChild(s);
+    return () => document.head.removeChild(s);
+  }, [code]);
+
+  return (
+    <CurrencyProvider>
+      <Nav currentPath="coverage" />
+      <ExitIntent />
+
+      <section style={{ padding: '140px 0 60px', position: 'relative' }}>
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
+        <div className="aurora" style={{ opacity: 0.4 }} />
+        <div className="container" style={{ position: 'relative' }}>
+          <a href="coverage.html" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13, marginBottom: 24 }}>
+            <I.ArrowLeft size={14} /> All countries
+          </a>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 56, alignItems: 'center' }} className="seg-hero">
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 14px', borderRadius: 999, background: 'rgba(0,127,255,0.12)', border: '1px solid rgba(0,127,255,0.3)', marginBottom: 24 }}>
+                <span style={{ fontSize: 18 }}>{country.flag}</span>
+                <span style={{ fontSize: 13, fontWeight: 600 }}>Coverage · {country.name}</span>
+              </div>
+              <h1 className="h-1" style={{ margin: 0, marginBottom: 18 }}>
+                eSIM for <span className="gradient-text">{seg.trip}</span><br/>
+                — pay {country.tech.includes('5G') ? '5G prices' : '4G prices'} for tier-1 service.
+              </h1>
+              <p className="lead" style={{ marginBottom: 32, maxWidth: 540 }}>
+                ${(country.price*1024).toFixed(2)}/GB on {country.networks}. Free eSIM, free signup, $5 minimum top-up. <span style={{color:'var(--mint)'}}>+ $2.50 welcome bonus.</span>
+              </p>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
+                <a href="get-esim.html" className="btn btn-primary" style={{ height: 56, padding: '0 24px' }}>
+                  Get my {country.name} eSIM <I.ArrowRight size={16} />
+                </a>
+                <a href="coverage.html" className="btn btn-ghost" style={{ height: 56, padding: '0 24px' }}>
+                  See all 150+ countries
+                </a>
+              </div>
+              <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', fontSize: 13, color: 'var(--text-2)' }}>
+                <span>✓ Native carrier · no roaming surcharge</span>
+                <span>✓ Hotspot included</span>
+                <span>✓ Balance never expires</span>
+              </div>
+            </div>
+
+            <div className="glass-strong" style={{ padding: 32 }}>
+              <div className="caption" style={{ color: '#66b7ff', marginBottom: 16 }}>Live rates · {country.name}</div>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, marginBottom: 28 }}>
+                <span style={{ fontSize: 56, fontWeight: 800, letterSpacing: '-2px' }}>${country.price.toFixed(3)}</span>
+                <span style={{ fontSize: 14, color: 'var(--text-3)', paddingBottom: 12 }}>/ MB</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {[
+                  { l: 'A typical day (≈200 MB)', v: `$${dailyCost}` },
+                  { l: 'A week of travel', v: `$${weekCost}` },
+                  { l: 'Heavy use (1 GB)', v: `$${(country.price*1024).toFixed(2)}` },
+                ].map(r => (
+                  <div key={r.l} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
+                    <span style={{ fontSize: 13, color: 'var(--text-2)' }}>{r.l}</span>
+                    <span className="mono" style={{ color: '#fff' }}>{r.v}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 20, padding: 14, borderRadius: 12, background: 'rgba(62,224,162,0.08)', border: '1px solid rgba(62,224,162,0.25)', fontSize: 13, color: 'var(--text-2)' }}>
+                <span style={{ color: 'var(--mint)', fontWeight: 700 }}>3% Miles back</span> automatically applied to top-ups
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* details grid */}
+      <section style={{ padding: '40px 0' }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }} className="seg-grid">
+            <div className="glass" style={{ padding: 28 }}>
+              <span className="icon-chip" style={{ marginBottom: 16 }}><I.Signal size={20} /></span>
+              <h3 className="h-4" style={{ margin: 0, marginBottom: 8 }}>Networks &amp; tech</h3>
+              <p className="body-sm" style={{ marginBottom: 16 }}>{country.networks}. {country.tech.includes('5G') ? 'Native 5G in major cities, full LTE elsewhere.' : '4G/LTE nationwide.'}</p>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                <span className="pill">{country.tech}</span>
+                <span className="pill">VoLTE</span>
+                <span className="pill">Hotspot</span>
+              </div>
+            </div>
+            <div className="glass" style={{ padding: 28 }}>
+              <span className="icon-chip" style={{ marginBottom: 16 }}><I.Compass size={20} /></span>
+              <h3 className="h-4" style={{ margin: 0, marginBottom: 8 }}>Where it works best</h3>
+              <p className="body-sm" style={{ marginBottom: 16 }}>Tested coverage in {seg.neighborhoods.length} neighborhoods this quarter.</p>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {seg.neighborhoods.map(n => <span key={n} className="pill">{n}</span>)}
+              </div>
+            </div>
+            <div className="glass" style={{ padding: 28 }}>
+              <span className="icon-chip" style={{ marginBottom: 16 }}><I.Sparkles size={20} /></span>
+              <h3 className="h-4" style={{ margin: 0, marginBottom: 8 }}>Local pro tip</h3>
+              <p className="body-sm" style={{ margin: 0 }}>{seg.tip}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* tested locations / highlights */}
+      <section style={{ padding: '40px 0' }}>
+        <div className="container">
+          <h2 className="h-2" style={{ marginTop: 0, marginBottom: 24 }}>What you get in {country.name}</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }} className="seg-grid">
+            {seg.highlights.map((h, i) => (
+              <div key={i} className="glass card-hover" style={{ padding: 28, display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                <span style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(62,224,162,0.15)', color: 'var(--mint)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <I.Check size={18} strokeWidth={2.5} />
+                </span>
+                <div style={{ fontSize: 15, fontWeight: 600 }}>{h}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* country FAQ */}
+      <section style={{ padding: '40px 0 80px' }}>
+        <div className="container">
+          <h2 className="h-2" style={{ marginTop: 0, marginBottom: 24 }}>Common questions about {country.name}</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 760 }}>
+            {[
+              { q: `How much will I spend in ${country.name}?`, a: `Typical travelers use 1–2 GB per week (~$${weekCost}). Map-heavy itineraries push closer to 3 GB. Heavy streamers should plan for 5 GB+.` },
+              { q: 'Will it work the moment I land?', a: `Yes. As long as you've installed the eSIM beforehand, your phone will lock onto ${country.networks.split(',')[0]} the moment airplane mode goes off.` },
+              { q: 'Can I tether to my laptop?', a: 'Hotspot is included on every plan in every country. Tethered MB count exactly the same.' },
+              { q: 'What if I run out of credit mid-trip?', a: 'Top up from the app in 30 seconds with Apple/Google Pay. New balance is usable instantly, no re-provisioning.' },
+            ].map(it => (
+              <details key={it.q} className="glass" style={{ padding: 24 }}>
+                <summary style={{ cursor: 'pointer', fontWeight: 600, fontSize: 15, listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>{it.q}</span>
+                  <I.Plus size={16} style={{ color: 'var(--text-3)' }} />
+                </summary>
+                <div style={{ paddingTop: 14, fontSize: 14, color: 'var(--text-2)', lineHeight: 1.7 }}>{it.a}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+      <style>{`
+        @media (max-width: 900px) {
+          .seg-hero { grid-template-columns: 1fr !important; }
+          .seg-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+    </CurrencyProvider>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<CountryPage />);
+</script>
+</body>
+</html>

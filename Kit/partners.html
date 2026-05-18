@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Partners — NeoSIM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="parts/Shared.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="parts/Nav.jsx"></script>
+<script type="text/babel" src="parts/Footer.jsx"></script>
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{ "accent": "#007FFF" }/*EDITMODE-END*/;
+
+// Code snippets stored as plain strings. We split tokens like </scr+ipt> so the
+// HTML parser doesn't terminate the babel block early.
+const SNIPPETS = {
+  iframe: [
+    '<!-- Drop anywhere in your HTML -->',
+    '<iframe',
+    '  src="https://widget.neosim.com/embed',
+    '    ?partner=YOUR_ID',
+    '    &theme=dark',
+    '    &lang=en"',
+    '  width="100%"',
+    '  height="640"',
+    '  style="border:0; border-radius:24px;"',
+    '  allow="payment">',
+    '</iframe>',
+  ].join('\n'),
+  js: [
+    '<' + 'script src="https://cdn.neosim.com/widget.js"',
+    '        async></' + 'script>',
+    '',
+    '<div id="neosim-widget"></div>',
+    '',
+    '<' + 'script>',
+    "  NeoSIM.mount('#neosim-widget', {",
+    "    partnerId: 'YOUR_ID',",
+    "    theme:     'dark',          // 'dark' | 'light' | custom",
+    "    countries: ['JP','TH','US'],",
+    '    onPurchase(esim) {',
+    '      // gtag, segment, etc.',
+    '    }',
+    '  });',
+    '</' + 'script>',
+  ].join('\n'),
+  api: [
+    'curl https://api.neosim.com/v1/esims \\',
+    '  -H "Authorization: Bearer sk_live_xxx" \\',
+    '  -H "Content-Type: application/json" \\',
+    "  -d '{",
+    '    "country":   "JP",',
+    '    "data_mb":   1024,',
+    '    "customer":  { "email": "alice@example.com" },',
+    '    "partner_ref": "trip-789"',
+    "  }'",
+    '',
+    '# Returns',
+    '{',
+    '  "id": "esim_01H...",',
+    '  "qr_code": "https://...",',
+    '  "activation_code": "LPA:1$...",',
+    '  "partner_commission_usd": 4.50',
+    '}',
+  ].join('\n'),
+  link: [
+    'https://neosim.com/?ref=YOUR_ID',
+    '',
+    '# With country pre-selected',
+    'https://neosim.com/jp?ref=YOUR_ID',
+    '',
+    '# With UTM tracking',
+    'https://neosim.com/?ref=YOUR_ID',
+    '  &utm_campaign=summer_blog',
+    '  &utm_source=instagram',
+  ].join('\n'),
+};
+
+function PartnersPage() {
+  const [tweaks] = useTweaks(TWEAK_DEFAULTS);
+  const [tab, setTab] = React.useState('iframe');
+  const [traffic, setTraffic] = React.useState(50000);
+  const [conv, setConv] = React.useState(2.4);
+
+  // Revenue model: visitors × conv% × avg order $18 × 25% rev share
+  const orders = Math.round(traffic * (conv/100));
+  const revenue = Math.round(orders * 18 * 0.25);
+
+  return (
+    <div style={{ background: 'var(--bg-deep)', minHeight: '100vh' }}>
+      <Nav tweaks={tweaks} currentPath="/partners.html" />
+
+      {/* HERO */}
+      <section style={{ padding: '140px 0 80px', position: 'relative' }}>
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, opacity: 0.5 }} />
+        <div className="aurora" style={{ opacity: 0.4 }} />
+        <div className="container" style={{ position: 'relative' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 64, alignItems: 'center' }} className="biz-hero">
+            <div>
+              <div className="caption" style={{ color: '#66b7ff', marginBottom: 18 }}>NeoSIM partner program</div>
+              <h1 className="h-1" style={{ margin: 0, marginBottom: 20 }}>
+                Sell eSIMs on your site.<br/><span className="gradient-text">No store, no SDK.</span>
+              </h1>
+              <p className="lead" style={{ marginBottom: 32, maxWidth: 540 }}>
+                Embed our checkout widget in 60 seconds. Travel blogs, booking platforms, airline apps, OTA sites — turn your traffic into recurring revenue with one line of code.
+              </p>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
+                <a href="#apply" className="btn btn-primary" style={{ height: 56, padding: '0 24px' }}>
+                  Become a partner <I.ArrowRight size={16}/>
+                </a>
+                <a href="#calc" className="btn btn-ghost" style={{ height: 56, padding: '0 24px' }}>
+                  Estimate revenue
+                </a>
+              </div>
+              <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', fontSize: 13, color: 'var(--text-2)' }}>
+                <span>✓ 25% revenue share</span>
+                <span>✓ 5-min approval</span>
+                <span>✓ Net-30 payouts</span>
+                <span>✓ White-label option</span>
+              </div>
+            </div>
+
+            {/* live widget preview as right-side card */}
+            <div className="glass-strong" style={{ padding: 28, position: 'relative' }}>
+              <div className="caption" style={{ color: '#66b7ff', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--mint)', boxShadow: '0 0 8px var(--mint)' }}/>
+                Live widget · embed preview
+              </div>
+              <div style={{
+                borderRadius: 14, padding: 20,
+                background: 'linear-gradient(180deg, rgba(0,127,255,0.12), rgba(0,127,255,0.02))',
+                border: '1px solid rgba(0,127,255,0.25)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                  <span style={{ width: 22, height: 22, borderRadius: 6, background: 'linear-gradient(135deg,#007FFF,#1a90ff)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><I.Globe size={12} strokeWidth={2.5}/></span>
+                  <div style={{ fontWeight: 800, fontSize: 13 }}>NeoSIM checkout</div>
+                  <span style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--text-3)' }}>by partner</span>
+                </div>
+                <div style={{ marginBottom: 10, fontSize: 12, color: 'var(--text-3)' }}>Destination</div>
+                <div className="field" style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10, padding: 12 }}>
+                  <span style={{ fontSize: 18 }}>🇯🇵</span>
+                  <div style={{ flex: 1, fontWeight: 600, fontSize: 14 }}>Japan</div>
+                  <span style={{ fontSize: 11, color: 'var(--text-3)' }}>$0.024 / MB</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderTop: '1px dashed rgba(255,255,255,0.08)', borderBottom: '1px dashed rgba(255,255,255,0.08)', marginBottom: 14 }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: 'var(--text-3)' }}>Starter pack · 1 GB</div>
+                    <div style={{ fontWeight: 800, fontSize: 22, letterSpacing: '-0.5px' }}>$24.00</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 10, color: 'var(--mint)' }}>Your share</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--mint)' }}>+$6.00</div>
+                  </div>
+                </div>
+                <button className="btn btn-primary" style={{ width: '100%', height: 44, fontSize: 14 }}>
+                  Get eSIM <I.ArrowRight size={16}/>
+                </button>
+              </div>
+              <div style={{ marginTop: 12, fontSize: 11, color: 'var(--text-3)', textAlign: 'center' }}>
+                Renders inline · responsive · Apple/Google Pay built-in
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHAT YOU GET */}
+      <section style={{ padding: '40px 0 60px' }}>
+        <div className="container">
+          <div className="caption" style={{ color: '#66b7ff', marginBottom: 12 }}>What you get</div>
+          <h2 className="h-2" style={{ margin: 0, marginBottom: 8 }}>Three ways to plug in.</h2>
+          <p className="body-sm" style={{ marginBottom: 40, maxWidth: 600 }}>Pick the one that matches your team — or combine all three.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }} className="three-grid">
+            {[
+              { i: <I.Globe size={20}/>, t: 'Embeddable widget', s: 'iFrame or JS snippet. Drops into any website or web-app. Theme it to your brand.', tag: 'No-code' },
+              { i: <I.Zap size={20}/>, t: 'REST API', s: 'Full programmatic access — issue eSIMs, top-ups, manage users from your stack.', tag: 'Devs' },
+              { i: <I.Wallet size={20}/>, t: 'Affiliate links', s: 'Just want a referral link? Get a tracked URL with your share code in 30 seconds.', tag: 'Easiest' },
+            ].map((f,i)=>(
+              <div key={i} className="glass card-hover" style={{ padding: 28 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
+                  <span className="icon-chip">{f.i}</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-3)', padding: '4px 10px', borderRadius: 999, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>{f.tag}</span>
+                </div>
+                <h3 className="h-4" style={{ margin: 0, marginBottom: 10 }}>{f.t}</h3>
+                <p className="body-sm" style={{ margin: 0 }}>{f.s}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* INTEGRATION SHOWCASE — code only, widget is in hero */}
+      <section style={{ padding: '60px 0', position: 'relative' }}>
+        <div className="aurora" style={{ opacity: 0.3 }} />
+        <div className="container" style={{ position: 'relative' }}>
+          <div className="caption" style={{ color: '#66b7ff', marginBottom: 12 }}>Integrate in 60 seconds</div>
+          <h2 className="h-2" style={{ margin: 0, marginBottom: 8 }}>One snippet. Live in minutes.</h2>
+          <p className="body-sm" style={{ marginBottom: 28, maxWidth: 600 }}>Pick your integration style — copy, paste, ship.</p>
+
+          {/* tabs */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+            {[
+              { id: 'iframe', label: 'iframe' },
+              { id: 'js', label: 'JS widget' },
+              { id: 'api', label: 'REST API' },
+              { id: 'link', label: 'Affiliate link' },
+            ].map(t => (
+              <button key={t.id} onClick={() => setTab(t.id)}
+                className={'screen-tab ' + (tab === t.id ? 'active' : '')}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* code block, full width */}
+          <div className="glass" style={{ padding: 0, overflow: 'hidden' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {['#ff5f57','#febc2e','#28c840'].map(c => <span key={c} style={{ width: 11, height: 11, borderRadius: 999, background: c }}/>)}
+              </div>
+              <div className="mono" style={{ fontSize: 11, color: 'var(--text-3)' }}>
+                {tab === 'iframe' && 'index.html'}
+                {tab === 'js' && 'app.js'}
+                {tab === 'api' && 'POST /v1/esims'}
+                {tab === 'link' && 'partner.url'}
+              </div>
+              <button style={{ fontSize: 11, color: 'var(--text-2)', padding: '4px 10px', borderRadius: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.06)' }}>Copy</button>
+            </div>
+            <pre style={{ margin: 0, padding: 24, fontSize: 13, lineHeight: 1.7, color: '#cfe1ff', overflow: 'auto', minHeight: 280, fontFamily: 'JetBrains Mono, monospace' }}>
+              {SNIPPETS[tab]}
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      {/* REVENUE CALC */}
+      <section id="calc" style={{ padding: '60px 0' }}>
+        <div className="container">
+          <div className="glass-strong" style={{ padding: 48 }}>
+            <div className="caption" style={{ color: '#66b7ff', marginBottom: 12 }}>Revenue calculator</div>
+            <h2 className="h-2" style={{ marginTop: 0, marginBottom: 32 }}>How much can you earn?</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }} className="calc-grid">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <span style={{ fontSize: 13, color: 'var(--text-2)' }}>Monthly visitors</span>
+                    <span className="mono" style={{ fontSize: 13, fontWeight: 700 }}>{traffic.toLocaleString()}</span>
+                  </div>
+                  <input type="range" min="1000" max="500000" step="1000" value={traffic} onChange={e => setTraffic(parseInt(e.target.value))}
+                    style={{ width: '100%', accentColor: '#007FFF' }}/>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <span style={{ fontSize: 13, color: 'var(--text-2)' }}>Conversion rate</span>
+                    <span className="mono" style={{ fontSize: 13, fontWeight: 700 }}>{conv}%</span>
+                  </div>
+                  <input type="range" min="0.5" max="8" step="0.1" value={conv} onChange={e => setConv(parseFloat(e.target.value))}
+                    style={{ width: '100%', accentColor: '#007FFF' }}/>
+                  <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 8 }}>Travel-niche partners average 2-4%</div>
+                </div>
+              </div>
+              <div style={{ borderLeft: '1px solid rgba(255,255,255,0.06)', paddingLeft: 32 }}>
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Monthly orders</div>
+                  <div style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.6px', marginTop: 4 }}>{orders.toLocaleString()}</div>
+                </div>
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Avg. order value</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>$18.00</div>
+                </div>
+                <div style={{ padding: 18, borderRadius: 14, background: 'rgba(62,224,162,0.1)', border: '1px solid rgba(62,224,162,0.25)' }}>
+                  <div style={{ fontSize: 11, color: 'var(--mint)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Your monthly revenue</div>
+                  <div style={{ fontSize: 38, fontWeight: 800, letterSpacing: '-1px', color: 'var(--mint)', marginTop: 4 }}>${revenue.toLocaleString()}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 6 }}>at 25% rev-share · paid Net-30</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHO IT'S FOR */}
+      <section style={{ padding: '60px 0' }}>
+        <div className="container">
+          <div className="caption" style={{ color: '#66b7ff', marginBottom: 12 }}>Who it's for</div>
+          <h2 className="h-2" style={{ margin: 0, marginBottom: 8 }}>Built for travel-adjacent traffic.</h2>
+          <p className="body-sm" style={{ marginBottom: 40, maxWidth: 600 }}>If your audience travels, your audience needs data.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }} className="who-grid">
+            {[
+              { i: <I.Plane size={20}/>, t: 'Booking platforms', s: 'Flights, hotels, tours — sell connectivity at checkout' },
+              { i: <I.MapPin size={20}/>, t: 'Travel blogs & creators', s: 'Monetize destination guides without ads' },
+              { i: <I.Smartphone size={20}/>, t: 'Travel apps', s: 'Itinerary, expense, language apps — bundle eSIM in onboarding' },
+              { i: <I.Building size={20}/>, t: 'Corporate travel', s: 'Resell to your client base under your brand' },
+            ].map((c,i)=>(
+              <div key={i} className="glass card-hover" style={{ padding: 24 }}>
+                <span className="icon-chip" style={{ marginBottom: 16 }}>{c.i}</span>
+                <h3 className="h-4" style={{ margin: 0, marginBottom: 6 }}>{c.t}</h3>
+                <p className="body-sm" style={{ margin: 0 }}>{c.s}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* APPLY */}
+      <section id="apply" style={{ padding: '60px 0 100px' }}>
+        <div className="container">
+          <div className="glass-strong" style={{ padding: 48, display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 48 }} className="apply-grid">
+            <div>
+              <div className="caption" style={{ color: '#66b7ff', marginBottom: 12 }}>Apply</div>
+              <h2 className="h-2" style={{ marginTop: 0, marginBottom: 16 }}>Become a partner.</h2>
+              <p className="body-sm" style={{ marginBottom: 24 }}>5-minute form. Most partners are approved within a business day. No setup fees, no minimums.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, color: 'var(--text-2)' }}>
+                <span>✓ 25% revenue share</span>
+                <span>✓ Net-30 payouts</span>
+                <span>✓ White-label option</span>
+                <span>✓ Dedicated partner manager</span>
+              </div>
+            </div>
+            <div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div className="field"><I.User size={16}/><input placeholder="Full name" /></div>
+                <div className="field"><I.Mail size={16}/><input placeholder="Work email" /></div>
+                <div className="field" style={{ gridColumn: '1 / -1' }}><I.Building size={16}/><input placeholder="Company / brand" /></div>
+                <div className="field" style={{ gridColumn: '1 / -1' }}><I.Globe size={16}/><input placeholder="Website URL" /></div>
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <div style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 10 }}>Integration type</div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {['Widget','API','Affiliate link','Not sure yet'].map(o => (
+                    <span key={o} className="pill" style={{ cursor: 'pointer' }}>{o}</span>
+                  ))}
+                </div>
+              </div>
+              <button className="btn btn-primary" style={{ width: '100%', height: 56, fontSize: 15, marginTop: 24 }}>
+                Apply for partnership <I.ArrowRight size={18}/>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer tweaks={tweaks} />
+      <ExitIntent />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <CurrencyProvider><PartnersPage/></CurrencyProvider>
+);
+</script>
+<style>
+  .three-grid, .who-grid, .biz-hero, .calc-grid, .apply-grid { }
+  @media (max-width: 980px) {
+    .three-grid, .who-grid { grid-template-columns: 1fr 1fr !important; }
+    .biz-hero, .calc-grid, .apply-grid { grid-template-columns: 1fr !important; }
+  }
+  @media (max-width: 640px) {
+    .three-grid, .who-grid { grid-template-columns: 1fr !important; }
+  }
+  .screen-tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 999px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-2); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .screen-tab:hover { border-color: rgba(0,127,255,0.4); color: #fff; }
+  .screen-tab.active { background: #fff; color: #000a17; border-color: #fff; }
+</style>
+</head>
+<body><div id="root"></div></body>
+</html>
