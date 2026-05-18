@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf node_modules)",
+      "Bash(pnpm install *)",
+      "Bash(rm vercel.ts && echo \"Removed vercel.ts\")",
+      "Bash(git commit -m ' *)",
+      "Bash(git remote *)",
+      "Bash(unzip -l \"/Users/anton/Downloads/Neosim WEB.zip\")",
+      "Bash(ls \"/Users/anton/Downloads/\" | grep -i neosim)",
+      "Bash(mkdir -p /Users/DEV/TEMLATES/Open-design-kit/design-systems/my-project)"
+    ]
+  }
+}

@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NeoSIM — Mobile UI Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; }
+  #root { height: 100%; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+
+// ─── Lucide icon helper ────────────────────────────────────────────────────
+// Lucide UMD exposes each icon as an array of [tagName, attrs] tuples.
+// e.g. lucide.Globe = [["circle",{cx:"12",cy:"12",r:"10"}],["path",{d:"..."}]]
+function Icon({ name, size = 16 }) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el || !window.lucide) return;
+    const iconData = window.lucide[name];
+    if (!iconData) return;
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '1.8');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.style.display = 'block';
+    iconData.forEach(([tag, attrs]) => {
+      const child = document.createElementNS(ns, tag);
+      Object.entries(attrs || {}).forEach(([k, v]) => child.setAttribute(k, v));
+      svg.appendChild(child);
+    });
+    el.innerHTML = '';
+    el.appendChild(svg);
+  });
+  return <span ref={ref} style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0, width:size, height:size }} />;
+}
+
+// ─── Design tokens ──────────────────────────────────────────────────────────
+const T = {
+  bg0:'#000a17', bg1:'#050f20', bg2:'#0a1424', bg3:'#0f1c33', bg4:'#142240',
+  blue:'#007fff', blueL:'#1a90ff', blueSoft:'rgba(0,127,255,0.12)', blueGlow:'rgba(0,127,255,0.35)',
+  mint:'#3ee0a2', amber:'#f59e0b', red:'#ef4444',
+  t1:'#ffffff', t2:'rgba(255,255,255,0.72)', t3:'rgba(255,255,255,0.50)', t4:'rgba(255,255,255,0.32)',
+  b1:'rgba(255,255,255,0.08)', b2:'rgba(255,255,255,0.14)',
+};
+
+// ─── Layout helpers ─────────────────────────────────────────────────────────
+const Row = ({ children, gap=8, align='center', wrap=false, style={} }) =>
+  <div style={{ display:'flex', alignItems:align, gap, flexWrap:wrap?'wrap':'nowrap', ...style }}>{children}</div>;
+const Col = ({ children, gap=8, style={} }) =>
+  <div style={{ display:'flex', flexDirection:'column', gap, ...style }}>{children}</div>;
+
+function KitLabel({ children }) {
+  return <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:T.t3, marginBottom:10 }}>{children}</div>;
+}
+function Divider({ children }) {
+  return (
+    <div style={{ display:'flex', alignItems:'center', gap:10, margin:'8px 0' }}>
+      <div style={{ flex:1, height:1, background:T.b1 }} />
+      <span style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:T.t4 }}>{children}</span>
+      <div style={{ flex:1, height:1, background:T.b1 }} />
+    </div>
+  );
+}
+function Card({ children, style={} }) {
+  return <div style={{ padding:24, borderRadius:20, background:T.bg1, fontFamily:'Manrope,sans-serif', ...style }}>{children}</div>;
+}
+
+// ─── 1. COLORS ──────────────────────────────────────────────────────────────
+function ColorsKit() {
+  const palette = [
+    { hex:'#000a17', label:'bg-deep', note:'Page bg' },
+    { hex:'#0a1424', label:'bg-card', note:'Cards' },
+    { hex:'#0f1c33', label:'bg-card-2', note:'Elevated' },
+    { hex:'#007fff', label:'electric', note:'Primary CTA' },
+    { hex:'#1a90ff', label:'electric-lt', note:'Hover' },
+    { hex:'#3ee0a2', label:'mint', note:'Success' },
+    { hex:'#f59e0b', label:'amber', note:'Warning' },
+    { hex:'#ef4444', label:'red', note:'Error' },
+  ];
+  const text = [
+    { val:'#ffffff', label:'text-1', note:'Headings' },
+    { val:'rgba(255,255,255,0.72)', label:'text-2', note:'Body' },
+    { val:'rgba(255,255,255,0.50)', label:'text-3', note:'Secondary' },
+    { val:'rgba(255,255,255,0.32)', label:'text-4', note:'Muted' },
+  ];
+  return (
+    <Col gap={18}>
+      <KitLabel>Color palette</KitLabel>
+      <Row gap={10} wrap>
+        {palette.map(s => (
+          <Col key={s.label} gap={5} style={{ alignItems:'flex-start' }}>
+            <div style={{ width:60, height:60, borderRadius:14, background:s.hex, border:`1px solid ${T.b2}`, boxShadow:'0 4px 16px rgba(0,0,0,0.5)' }} />
+            <div style={{ fontSize:10, fontWeight:700, color:T.t1, fontFamily:'JetBrains Mono,monospace' }}>{s.hex}</div>
+            <div style={{ fontSize:10, color:T.t3 }}>{s.note}</div>
+          </Col>
+        ))}
+      </Row>
+      <Divider>Text tokens</Divider>
+      <Col gap={8}>
+        {text.map(t => (
+          <Row key={t.label} gap={12}>
+            <div style={{ width:32, height:32, borderRadius:8, background:T.bg3, border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <div style={{ width:16, height:16, borderRadius:4, background:t.val }} />
+            </div>
+            <Col gap={1}>
+              <div style={{ fontSize:11, fontWeight:700, color:T.t1, fontFamily:'JetBrains Mono,monospace' }}>{t.label}</div>
+              <div style={{ fontSize:10, color:T.t3 }}>{t.note}</div>
+            </Col>
+          </Row>
+        ))}
+      </Col>
+      <Divider>Border tokens</Divider>
+      <Row gap={12}>
+        {[['b1','rgba(255,255,255,0.08)','Default'],['b2','rgba(255,255,255,0.14)','Hover']].map(([l,v,n]) => (
+          <Col key={l} gap={5}>
+            <div style={{ width:90, height:44, borderRadius:12, background:T.bg2, border:`2px solid ${v}` }} />
+            <div style={{ fontSize:10, color:T.t3 }}>{n}</div>
+          </Col>
+        ))}
+      </Row>
+    </Col>
+  );
+}
+
+// ─── 2. TYPOGRAPHY ──────────────────────────────────────────────────────────
+function TypoKit() {
+  const scale = [
+    { label:'Display', size:32, weight:800, ls:'-0.8px', text:'NeoSIM' },
+    { label:'H1', size:28, weight:700, ls:'-0.6px', text:'One eSIM. 150+ countries.' },
+    { label:'H2', size:22, weight:700, ls:'-0.4px', text:'Your active plans' },
+    { label:'H3', size:18, weight:700, ls:'-0.2px', text:'Japan — 3 GB' },
+    { label:'H4', size:15, weight:700, ls:'-0.1px', text:'Active · Expires Jun 12' },
+    { label:'Body LG', size:16, weight:400, ls:'0', text:'Pay only for the data you use.' },
+    { label:'Body', size:14, weight:400, ls:'0', text:'Land anywhere and connect instantly.' },
+    { label:'Body SM', size:13, weight:400, ls:'0', text:'No SIM swap, no roaming bills.' },
+    { label:'Caption', size:11, weight:600, ls:'0.06em', text:'STEP 1 OF 3', upper:true },
+    { label:'Mono', size:12, weight:400, ls:'0', text:'LPA:1$smdp.eim.net$MATCH-ID', mono:true },
+  ];
+  return (
+    <Col gap={6}>
+      <KitLabel>Type scale — Manrope</KitLabel>
+      {scale.map(s => (
+        <div key={s.label} style={{ padding:'10px 14px', borderRadius:12, background:T.bg2, border:`1px solid ${T.b1}`, display:'flex', alignItems:'baseline', gap:14 }}>
+          <span style={{ width:58, fontSize:10, fontWeight:700, color:T.t4, flexShrink:0 }}>{s.label}</span>
+          <span style={{ fontSize:s.size, fontWeight:s.weight, letterSpacing:s.ls, color:T.t1, fontFamily:s.mono?'JetBrains Mono,monospace':'Manrope,sans-serif', textTransform:s.upper?'uppercase':'none', lineHeight:1.2, flex:1 }}>{s.text}</span>
+          <span style={{ fontSize:10, color:T.t4, flexShrink:0, fontFamily:'JetBrains Mono,monospace' }}>{s.size}px/{s.weight}</span>
+        </div>
+      ))}
+    </Col>
+  );
+}
+
+// ─── 3. BUTTONS ─────────────────────────────────────────────────────────────
+function ButtonsKit() {
+  const [active, setActive] = React.useState(null);
+  const Btn = ({ label, id, style={} }) => (
+    <button onMouseDown={()=>setActive(id)} onMouseUp={()=>setActive(null)} onMouseLeave={()=>setActive(null)}
+      style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', gap:8, height:52, padding:'0 24px', borderRadius:9999, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:15, border:'none', cursor:'pointer', transition:'all 0.18s', transform:active===id?'scale(0.97)':'none', ...style }}>
+      {label}
+    </button>
+  );
+  return (
+    <Col gap={16}>
+      <KitLabel>Buttons</KitLabel>
+      <Divider>Primary — 52px</Divider>
+      <Row gap={8} wrap>
+        <Btn label="Get free eSIM →" id="p1" style={{ background:'#fff', color:T.bg0 }} />
+        <Btn label="Top up balance" id="p2" style={{ background:T.blue, color:'#fff', boxShadow:'0 8px 24px rgba(0,127,255,0.35)' }} />
+        <Btn label="View plans" id="p3" style={{ background:T.bg2, border:`1px solid ${T.b1}`, color:T.t1 }} />
+        <Btn label="Cancel plan" id="p4" style={{ background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.3)', color:T.red }} />
+      </Row>
+      <Divider>Medium — 44px</Divider>
+      <Row gap={8} wrap>
+        {[['Activate','m1',{background:'#fff',color:T.bg0}],['Top up','m2',{background:T.blue,color:'#fff'}],['Details','m3',{background:T.bg2,border:`1px solid ${T.b1}`,color:T.t1}]].map(([l,id,s])=>(
+          <button key={id} onMouseDown={()=>setActive(id)} onMouseUp={()=>setActive(null)} onMouseLeave={()=>setActive(null)}
+            style={{ height:44, padding:'0 20px', borderRadius:9999, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, border:'none', cursor:'pointer', transition:'all 0.18s', transform:active===id?'scale(0.97)':'none', ...s }}>{l}</button>
+        ))}
+      </Row>
+      <Divider>Small — 36px</Divider>
+      <Row gap={8} wrap>
+        {[['Add plan','s1',{background:'#fff',color:T.bg0}],['Buy data','s2',{background:T.blue,color:'#fff'}],['Share','s3',{background:T.bg2,border:`1px solid ${T.b1}`,color:T.t1}],['Cancel','s4',{background:'rgba(255,255,255,0.04)',border:`1px solid ${T.b1}`,color:T.t3}]].map(([l,id,s])=>(
+          <button key={id} onMouseDown={()=>setActive(id)} onMouseUp={()=>setActive(null)} onMouseLeave={()=>setActive(null)}
+            style={{ height:36, padding:'0 16px', borderRadius:9999, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:13, border:'none', cursor:'pointer', transition:'all 0.18s', transform:active===id?'scale(0.97)':'none', ...s }}>{l}</button>
+        ))}
+      </Row>
+      <Divider>Icon buttons — 52px</Divider>
+      <Row gap={8}>
+        {[['Plus','#fff',T.bg0,null],['Zap',T.blue,'#fff','0 8px 24px rgba(0,127,255,0.35)'],['Share2',T.bg2,T.t1,null],['Settings',T.bg2,T.t1,null],['X',T.bg2,T.t1,null]].map(([icon,bg,color,shadow],i)=>(
+          <button key={icon+i} onMouseDown={()=>setActive('ic'+i)} onMouseUp={()=>setActive(null)} onMouseLeave={()=>setActive(null)}
+            style={{ width:52,height:52,borderRadius:9999,background:bg,color,border:`1px solid ${T.b1}`,display:'inline-flex',alignItems:'center',justifyContent:'center',cursor:'pointer',transition:'all 0.18s',transform:active===('ic'+i)?'scale(0.93)':'none',boxShadow:shadow||'none',flexShrink:0 }}>
+            <Icon name={icon} size={20} />
+          </button>
+        ))}
+      </Row>
+      <Divider>States</Divider>
+      <Row gap={8} wrap>
+        <button style={{ height:52,padding:'0 24px',borderRadius:9999,background:'#fff',color:T.bg0,fontFamily:'Manrope,sans-serif',fontWeight:700,fontSize:15,border:'none',opacity:0.4,cursor:'not-allowed' }}>Disabled</button>
+        <button style={{ height:52,padding:'0 24px',borderRadius:9999,background:T.blue,color:'#fff',fontFamily:'Manrope,sans-serif',fontWeight:700,fontSize:15,border:'none',boxShadow:`0 0 0 3px rgba(0,127,255,0.35)`,cursor:'default' }}>Focused</button>
+        <button style={{ height:52,padding:'0 24px',borderRadius:9999,background:T.blue,color:'#fff',fontFamily:'Manrope,sans-serif',fontWeight:700,fontSize:15,border:'none',opacity:0.65,cursor:'wait',display:'inline-flex',alignItems:'center',gap:8 }}>
+          <span style={{ width:14,height:14,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.7s linear infinite',display:'inline-block' }} /> Loading
+        </button>
+      </Row>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </Col>
+  );
+}
+
+// ─── 4. FORM INPUTS ─────────────────────────────────────────────────────────
+function InputsKit() {
+  const [v1,setV1]=React.useState('');
+  const [v2,setV2]=React.useState('user@email.com');
+  const [tog1,setTog1]=React.useState(true);
+  const [tog2,setTog2]=React.useState(false);
+  const [chk1,setChk1]=React.useState(true);
+  const [chk2,setChk2]=React.useState(false);
+  const [seg,setSeg]=React.useState('3 GB');
+  const [focused,setFocused]=React.useState(null);
+
+  const Field = ({ icon, placeholder, value, onChange, id, type='text', err=false }) => (
+    <div style={{ display:'flex', alignItems:'center', gap:12, padding:'0 18px', height:54, borderRadius:16, background:err?'rgba(239,68,68,0.05)':'rgba(255,255,255,0.03)', border:`1px solid ${err?'rgba(239,68,68,0.35)':focused===id?'rgba(0,127,255,0.5)':T.b1}`, transition:'border-color 0.2s', boxShadow:focused===id&&!err?'0 0 0 3px rgba(0,127,255,0.1)':'none' }}>
+      <span style={{ color:err?T.red:T.t3, display:'flex' }}><Icon name={icon} size={18} /></span>
+      <input type={type} placeholder={placeholder} value={value} onChange={e=>onChange?.(e.target.value)} onFocus={()=>setFocused(id)} onBlur={()=>setFocused(null)}
+        style={{ background:'none', border:'none', outline:'none', color:err?T.red:'#fff', fontFamily:'Manrope,sans-serif', fontSize:15, flex:1 }} />
+    </div>
+  );
+
+  const Toggle = ({ on, setOn }) => (
+    <div onClick={()=>setOn(!on)} style={{ width:46, height:26, borderRadius:13, background:on?T.blue:T.bg3, cursor:'pointer', position:'relative', transition:'background 0.2s', flexShrink:0, border:`1px solid ${on?'transparent':T.b1}` }}>
+      <div style={{ position:'absolute', top:3, left:on?22:3, width:20, height:20, borderRadius:10, background:'#fff', transition:'left 0.2s', boxShadow:'0 2px 5px rgba(0,0,0,0.3)' }} />
+    </div>
+  );
+
+  const Checkbox = ({ on, setOn }) => (
+    <div onClick={()=>setOn(!on)} style={{ width:22, height:22, borderRadius:6, border:`1.5px solid ${on?T.blue:T.b2}`, background:on?T.blue:'transparent', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.15s', flexShrink:0 }}>
+      {on && <svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4.5L4.5 8L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+    </div>
+  );
+
+  return (
+    <Col gap={16}>
+      <KitLabel>Form inputs</KitLabel>
+      <Divider>Text fields</Divider>
+      <Col gap={8}>
+        <Field icon="Search" placeholder="Search countries, plans…" value={v1} onChange={setV1} id="f1" />
+        <Field icon="Mail" placeholder="Email address" value={v2} onChange={setV2} id="f2" type="email" />
+        <Field icon="Lock" placeholder="Password" value="" id="f3" type="password" />
+        <Field icon="AlertCircle" placeholder="Invalid phone number" value="" id="f4" err />
+      </Col>
+      <Divider>Toggles</Divider>
+      <Col gap={8}>
+        {[['Auto-renew plan','Renew when data runs out',tog1,setTog1],['WiFi calling','Enable over WiFi',tog2,setTog2]].map(([label,sub,on,setOn])=>(
+          <Row key={label} style={{ padding:'12px 16px', borderRadius:14, background:T.bg2, border:`1px solid ${T.b1}` }}>
+            <Col gap={2} style={{ flex:1 }}>
+              <div style={{ fontSize:14, fontWeight:600, color:T.t1 }}>{label}</div>
+              <div style={{ fontSize:12, color:T.t3 }}>{sub}</div>
+            </Col>
+            <Toggle on={on} setOn={setOn} />
+          </Row>
+        ))}
+      </Col>
+      <Divider>Checkboxes</Divider>
+      <Col gap={10}>
+        {[['Save payment method',chk1,setChk1],['Subscribe to trip alerts',chk2,setChk2]].map(([label,on,setOn])=>(
+          <Row key={label} gap={12} style={{ cursor:'pointer' }} onClick={()=>setOn(!on)}>
+            <Checkbox on={on} setOn={setOn} />
+            <span style={{ fontSize:14, fontWeight:500, color:on?T.t1:T.t2 }}>{label}</span>
+          </Row>
+        ))}
+      </Col>
+      <Divider>Segmented control</Divider>
+      <div style={{ display:'inline-flex', padding:4, borderRadius:9999, background:T.bg2, border:`1px solid ${T.b1}`, gap:2 }}>
+        {['1 GB','3 GB','5 GB','10 GB'].map(opt=>(
+          <button key={opt} onClick={()=>setSeg(opt)} style={{ height:38, padding:'0 14px', borderRadius:9999, fontFamily:'Manrope,sans-serif', fontSize:13, fontWeight:700, border:'none', cursor:'pointer', transition:'all 0.2s', background:seg===opt?'#fff':'transparent', color:seg===opt?T.bg0:T.t3 }}>{opt}</button>
+        ))}
+      </div>
+    </Col>
+  );
+}
+
+// ─── 5. BADGES & TAGS ───────────────────────────────────────────────────────
+function BadgesKit() {
+  return (
+    <Col gap={16}>
+      <KitLabel>Badges & tags</KitLabel>
+      <Divider>Status badges</Divider>
+      <Row gap={8} wrap>
+        {[
+          ['Active',T.mint,'rgba(62,224,162,0.12)','rgba(62,224,162,0.3)',true],
+          ['Expired',T.red,'rgba(239,68,68,0.10)','rgba(239,68,68,0.3)',true],
+          ['Pending',T.amber,'rgba(245,158,11,0.12)','rgba(245,158,11,0.3)',true],
+          ['Recommended',T.mint,'rgba(62,224,162,0.15)','transparent',false],
+          ['New','#fff',T.blue,'transparent',false],
+          ['Free',T.bg0,'#fff','transparent',false],
+          ['eSIM ready',T.blueL,T.blueSoft,'rgba(0,127,255,0.2)',false],
+          ['GDPR',T.t2,T.bg2,T.b1,false],
+        ].map(([label,color,bg,border,dot])=>(
+          <div key={label} style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'5px 12px', borderRadius:9999, background:bg, border:`1px solid ${border}`, fontSize:12, fontWeight:700, color }}>
+            {dot && <div style={{ width:6, height:6, borderRadius:3, background:color }} />}
+            {label}
+          </div>
+        ))}
+      </Row>
+      <Divider>Feature pills</Divider>
+      <Row gap={8} wrap>
+        {[['Globe','150+ countries'],['Zap','Instant activate'],['Shield','No contract'],['Headphones','24/7 support']].map(([icon,label])=>(
+          <div key={label} style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'8px 14px', borderRadius:9999, background:T.bg2, border:`1px solid ${T.b1}`, fontSize:13, fontWeight:500, color:T.t2 }}>
+            <span style={{ color:T.blue, display:'flex' }}><Icon name={icon} size={14} /></span>{label}
+          </div>
+        ))}
+      </Row>
+      <Divider>Country chips</Divider>
+      <Row gap={8} wrap>
+        {['🇯🇵 Japan','🇫🇷 France','🇩🇪 Germany','🇺🇸 USA','🇬🇧 UK','🇸🇬 Singapore'].map(c=>(
+          <div key={c} style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'6px 14px', borderRadius:9999, background:T.bg2, border:`1px solid ${T.b1}`, fontSize:13, fontWeight:600, color:T.t1 }}>{c}</div>
+        ))}
+      </Row>
+      <Divider>Data chips</Divider>
+      <Row gap={8} wrap>
+        {['1 GB','3 GB','5 GB','10 GB','Unlimited'].map((d,i)=>(
+          <div key={d} style={{ display:'inline-flex', alignItems:'center', gap:4, padding:'6px 14px', borderRadius:9999, background:i===2?T.blue:T.bg2, border:i===2?'none':`1px solid ${T.b1}`, fontSize:13, fontWeight:700, color:i===2?'#fff':T.t2 }}>{d}</div>
+        ))}
+      </Row>
+    </Col>
+  );
+}
+
+// ─── 6. CARDS ───────────────────────────────────────────────────────────────
+function CardsKit() {
+  return (
+    <Col gap={16}>
+      <KitLabel>Cards</KitLabel>
+      <Divider>eSIM plan cards</Divider>
+      <Row gap={10}>
+        {[
+          { flag:'🇯🇵', country:'Japan', plan:'3 GB · 15 days', price:'$12.00', status:'Active', sc:T.mint, sb:'rgba(62,224,162,0.12)', exp:'Jun 12, 2026', pct:68 },
+          { flag:'🇫🇷', country:'France', plan:'5 GB · 30 days', price:'$18.00', status:'Expired', sc:T.red, sb:'rgba(239,68,68,0.10)', exp:'May 1, 2026', pct:100 },
+        ].map(c=>(
+          <div key={c.country} style={{ flex:1, padding:18, borderRadius:22, background:`linear-gradient(160deg,${T.bg3},${T.bg2})`, border:`1px solid ${T.b1}`, position:'relative', overflow:'hidden' }}>
+            <div style={{ position:'absolute', right:-20, top:-20, width:90, height:90, borderRadius:'50%', background:`radial-gradient(circle,${T.blueSoft},transparent 70%)` }} />
+            <Row gap={8} align="flex-start" style={{ marginBottom:14 }}>
+              <div style={{ fontSize:20 }}>{c.flag}</div>
+              <Col gap={1} style={{ flex:1 }}>
+                <div style={{ fontSize:13, fontWeight:700, color:T.t1 }}>{c.country}</div>
+                <div style={{ fontSize:11, color:T.t3 }}>{c.plan}</div>
+              </Col>
+              <div style={{ padding:'3px 9px', borderRadius:9999, background:c.sb, fontSize:11, fontWeight:700, color:c.sc }}>{c.status}</div>
+            </Row>
+            <div style={{ height:3, borderRadius:2, background:T.b1, marginBottom:6 }}>
+              <div style={{ height:'100%', width:`${c.pct}%`, borderRadius:2, background:c.pct===100?T.red:`linear-gradient(90deg,${T.blue},${T.blueL})` }} />
+            </div>
+            <Row style={{ justifyContent:'space-between' }}>
+              <span style={{ fontSize:11, color:T.t3 }}>Expires {c.exp}</span>
+              <span style={{ fontSize:15, fontWeight:800, color:T.t1 }}>{c.price}</span>
+            </Row>
+          </div>
+        ))}
+      </Row>
+
+      <Divider>Wallet / balance card</Divider>
+      <div style={{ padding:'22px 22px', borderRadius:26, background:'linear-gradient(135deg,#0a1c3e,#051226)', border:'1px solid rgba(0,127,255,0.2)', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', right:-50, top:-50, width:180, height:180, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,127,255,0.22),transparent 70%)' }} />
+        <div style={{ position:'absolute', left:-30, bottom:-30, width:130, height:130, borderRadius:'50%', background:'radial-gradient(circle,rgba(62,224,162,0.09),transparent 70%)' }} />
+        <Row style={{ justifyContent:'space-between', marginBottom:18 }} align="flex-start">
+          <Col gap={4}>
+            <div style={{ fontSize:11, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:T.t3 }}>Available balance</div>
+            <div style={{ fontSize:34, fontWeight:800, color:'#fff', letterSpacing:'-0.5px' }}>$24.50</div>
+            <div style={{ fontSize:12, color:T.mint }}>+$2.50 cashback pending</div>
+          </Col>
+          <div style={{ width:42, height:42, borderRadius:13, background:'rgba(255,255,255,0.08)', display:'flex', alignItems:'center', justifyContent:'center', color:T.t2 }}>
+            <Icon name="CreditCard" size={20} />
+          </div>
+        </Row>
+        <Row gap={8}>
+          <button style={{ flex:1, height:42, borderRadius:9999, background:'#fff', color:T.bg0, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:13, border:'none', cursor:'pointer' }}>Top up</button>
+          <button style={{ flex:1, height:42, borderRadius:9999, background:'rgba(255,255,255,0.08)', color:'#fff', fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:13, border:`1px solid ${T.b1}`, cursor:'pointer' }}>History</button>
+        </Row>
+      </div>
+
+      <Divider>Destination cards</Divider>
+      <Row gap={8}>
+        {[{flag:'🇯🇵',name:'Tokyo',plans:'12 plans',from:'$9'},{flag:'🇫🇷',name:'Paris',plans:'8 plans',from:'$11'},{flag:'🇸🇬',name:'Singapore',plans:'6 plans',from:'$8'}].map(d=>(
+          <div key={d.name} style={{ flex:1, padding:'16px 14px', borderRadius:18, background:T.bg2, border:`1px solid ${T.b1}`, cursor:'pointer' }}>
+            <div style={{ fontSize:26, marginBottom:8 }}>{d.flag}</div>
+            <div style={{ fontSize:13, fontWeight:700, color:T.t1, marginBottom:2 }}>{d.name}</div>
+            <div style={{ fontSize:11, color:T.t3, marginBottom:10 }}>{d.plans}</div>
+            <Row style={{ justifyContent:'space-between' }}>
+              <span style={{ fontSize:11, color:T.t3 }}>From</span>
+              <span style={{ fontSize:14, fontWeight:800, color:T.t1 }}>{d.from}</span>
+            </Row>
+          </div>
+        ))}
+      </Row>
+
+      <Divider>Alert cards</Divider>
+      <Col gap={8}>
+        {[
+          ['CheckCircle',T.mint,'rgba(62,224,162,0.08)','rgba(62,224,162,0.25)','eSIM installed','Japan 3 GB is active and ready.'],
+          ['AlertTriangle',T.amber,'rgba(245,158,11,0.08)','rgba(245,158,11,0.25)','Low data warning','Less than 200 MB remaining.'],
+          ['AlertCircle',T.red,'rgba(239,68,68,0.08)','rgba(239,68,68,0.25)','Payment failed','Update your payment method.'],
+          ['Info',T.blueL,T.blueSoft,'rgba(0,127,255,0.2)','New plans available','10 GB Asia plans from $14.'],
+        ].map(([icon,color,bg,border,title,sub])=>(
+          <div key={title} style={{ padding:'12px 14px', borderRadius:14, background:bg, border:`1px solid ${border}`, display:'flex', gap:12, alignItems:'flex-start' }}>
+            <span style={{ color, marginTop:1, display:'flex', flexShrink:0 }}><Icon name={icon} size={18} /></span>
+            <div>
+              <div style={{ fontSize:13, fontWeight:700, color:T.t1, marginBottom:2 }}>{title}</div>
+              <div style={{ fontSize:12, color:T.t2 }}>{sub}</div>
+            </div>
+          </div>
+        ))}
+      </Col>
+    </Col>
+  );
+}
+
+// ─── 7. LIST ITEMS ──────────────────────────────────────────────────────────
+function ListKit() {
+  return (
+    <Col gap={16}>
+      <KitLabel>List items</KitLabel>
+      <Divider>Settings rows</Divider>
+      <Col gap={0} style={{ borderRadius:18, background:T.bg2, border:`1px solid ${T.b1}`, overflow:'hidden' }}>
+        {[['Bell','Notifications','On'],['Globe','Language','English'],['Shield','Privacy',null],['CreditCard','Payment','Visa ••4242'],['HelpCircle','Help & support',null]].map(([icon,label,value],i,arr)=>(
+          <div key={label} style={{ display:'flex', alignItems:'center', gap:14, padding:'14px 18px', borderBottom:i<arr.length-1?`1px solid ${T.b1}`:'none', cursor:'pointer' }}>
+            <div style={{ width:34, height:34, borderRadius:10, background:T.blueSoft, border:'1px solid rgba(0,127,255,0.15)', display:'flex', alignItems:'center', justifyContent:'center', color:T.blueL }}>
+              <Icon name={icon} size={17} />
+            </div>
+            <span style={{ flex:1, fontSize:14, fontWeight:500, color:T.t1 }}>{label}</span>
+            {value && <span style={{ fontSize:13, color:T.t3 }}>{value}</span>}
+            <span style={{ color:T.t4, display:'flex' }}><Icon name="ChevronRight" size={16} /></span>
+          </div>
+        ))}
+      </Col>
+      <Divider>Transaction rows</Divider>
+      <Col gap={0} style={{ borderRadius:18, background:T.bg2, border:`1px solid ${T.b1}`, overflow:'hidden' }}>
+        {[['Zap','Japan 3 GB plan','May 3, 2026','-$12.00',T.t1],['Plus','Balance top-up','Apr 28, 2026','+$20.00',T.mint],['Gift','Cashback earned','Apr 28, 2026','+$2.50',T.mint],['RotateCcw','Refund','Apr 20, 2026','+$5.00',T.mint]].map(([icon,label,sub,amt,color],i,arr)=>(
+          <div key={label} style={{ display:'flex', alignItems:'center', gap:12, padding:'13px 18px', borderBottom:i<arr.length-1?`1px solid ${T.b1}`:'none' }}>
+            <div style={{ width:34, height:34, borderRadius:10, background:T.bg3, border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center', color:T.t3 }}>
+              <Icon name={icon} size={16} />
+            </div>
+            <Col gap={2} style={{ flex:1 }}>
+              <span style={{ fontSize:13, fontWeight:600, color:T.t1 }}>{label}</span>
+              <span style={{ fontSize:11, color:T.t3 }}>{sub}</span>
+            </Col>
+            <span style={{ fontSize:13, fontWeight:700, color }}>{amt}</span>
+          </div>
+        ))}
+      </Col>
+    </Col>
+  );
+}
+
+// ─── 8. NAVIGATION ──────────────────────────────────────────────────────────
+function NavKit() {
+  const [tab, setTab] = React.useState('home');
+  const tabs = [['Home','home'],['Layers','plans'],['Search','search'],['Wallet','wallet'],['User','profile']];
+  return (
+    <Col gap={16}>
+      <KitLabel>Navigation</KitLabel>
+      <Divider>Top app bar</Divider>
+      <div style={{ padding:'0 18px', height:58, borderRadius:18, background:T.bg2, border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', gap:12 }}>
+        <div style={{ width:30, height:30, borderRadius:9, background:`linear-gradient(135deg,${T.blue},${T.blueL})`, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 14px ${T.blueGlow}` }}>
+          <Icon name="Globe" size={16} />
+        </div>
+        <span style={{ fontSize:17, fontWeight:800, color:'#fff', letterSpacing:'-0.3px', flex:1 }}>NeoSIM</span>
+        <button style={{ width:34, height:34, borderRadius:9, background:'rgba(255,255,255,0.06)', border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center', color:T.t2, cursor:'pointer' }}>
+          <Icon name="Bell" size={16} />
+        </button>
+        <div style={{ width:34, height:34, borderRadius:9, background:`linear-gradient(135deg,${T.blue},#0051a8)`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <span style={{ fontSize:12, fontWeight:700, color:'#fff' }}>AS</span>
+        </div>
+      </div>
+
+      <Divider>Bottom tab bar</Divider>
+      <div style={{ borderRadius:26, background:'rgba(10,20,36,0.96)', border:`1px solid ${T.b1}`, padding:'6px 6px' }}>
+        <Row gap={0} style={{ justifyContent:'space-between' }}>
+          {tabs.map(([icon, id]) => (
+            <button key={id} onClick={() => setTab(id)} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:4, padding:'10px 0', border:'none', background:'none', cursor:'pointer', position:'relative' }}>
+              {tab===id && <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)', width:28, height:2, borderRadius:1, background:T.blue }} />}
+              <span style={{ color:tab===id?T.blue:T.t3, display:'flex', transition:'color 0.15s' }}>
+                <Icon name={icon} size={22} />
+              </span>
+              <span style={{ fontSize:10, fontWeight:700, color:tab===id?T.blue:T.t4, transition:'color 0.15s' }}>
+                {['Home','Plans','Explore','Wallet','Profile'][ ['home','plans','search','wallet','profile'].indexOf(id) ]}
+              </span>
+            </button>
+          ))}
+        </Row>
+      </div>
+
+      <Divider>Back / title bar</Divider>
+      <div style={{ padding:'0 16px', height:52, borderRadius:14, background:T.bg2, border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', gap:10 }}>
+        <button style={{ width:34, height:34, borderRadius:9, background:'rgba(255,255,255,0.06)', border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center', color:T.t1, cursor:'pointer' }}>
+          <Icon name="ArrowLeft" size={17} />
+        </button>
+        <span style={{ flex:1, textAlign:'center', fontSize:15, fontWeight:700, color:T.t1 }}>Select a plan</span>
+        <button style={{ width:34, height:34, borderRadius:9, background:'rgba(255,255,255,0.06)', border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center', color:T.t1, cursor:'pointer' }}>
+          <Icon name="Share2" size={17} />
+        </button>
+      </div>
+
+      <Divider>Tab pill switcher</Divider>
+      <div style={{ display:'inline-flex', padding:4, borderRadius:9999, background:T.bg2, border:`1px solid ${T.b1}`, gap:2 }}>
+        {['My eSIMs','Explore','History'].map((t,i)=>(
+          <button key={t} style={{ height:38, padding:'0 18px', borderRadius:9999, fontFamily:'Manrope,sans-serif', fontSize:13, fontWeight:700, border:'none', cursor:'pointer', transition:'all 0.18s', background:i===0?'#fff':'transparent', color:i===0?T.bg0:T.t3 }}>{t}</button>
+        ))}
+      </div>
+    </Col>
+  );
+}
+
+// ─── 9. MODALS & SHEETS ─────────────────────────────────────────────────────
+function ModalsKit() {
+  return (
+    <Col gap={16}>
+      <KitLabel>Modals & bottom sheets</KitLabel>
+      <Divider>Confirm dialog</Divider>
+      <div style={{ padding:24, borderRadius:26, background:'linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))', border:`1px solid ${T.b1}`, backdropFilter:'blur(24px)', maxWidth:320 }}>
+        <div style={{ width:48, height:48, borderRadius:14, background:'rgba(245,158,11,0.12)', border:'1px solid rgba(245,158,11,0.3)', display:'flex', alignItems:'center', justifyContent:'center', color:T.amber, marginBottom:14 }}>
+          <Icon name="AlertTriangle" size={22} />
+        </div>
+        <div style={{ fontSize:17, fontWeight:700, color:T.t1, marginBottom:8 }}>Cancel plan?</div>
+        <div style={{ fontSize:13, color:T.t2, lineHeight:1.55, marginBottom:22 }}>Your Japan 3 GB plan will be cancelled immediately. Unused data is non-refundable.</div>
+        <Row gap={8}>
+          <button style={{ flex:1, height:46, borderRadius:9999, background:'rgba(255,255,255,0.06)', border:`1px solid ${T.b1}`, color:T.t1, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, cursor:'pointer' }}>Keep plan</button>
+          <button style={{ flex:1, height:46, borderRadius:9999, background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.3)', color:T.red, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, cursor:'pointer' }}>Cancel</button>
+        </Row>
+      </div>
+
+      <Divider>Bottom sheet — plan details</Divider>
+      <div style={{ borderRadius:26, background:T.bg2, border:`1px solid ${T.b1}`, overflow:'hidden', maxWidth:340 }}>
+        <div style={{ padding:'10px 0 0', display:'flex', justifyContent:'center' }}>
+          <div style={{ width:36, height:4, borderRadius:2, background:T.b2 }} />
+        </div>
+        <div style={{ padding:'18px 22px 24px' }}>
+          <Row align="center" style={{ marginBottom:18 }}>
+            <div style={{ fontSize:26 }}>🇯🇵</div>
+            <Col gap={2} style={{ flex:1, marginLeft:12 }}>
+              <div style={{ fontSize:17, fontWeight:700, color:T.t1 }}>Japan</div>
+              <div style={{ fontSize:12, color:T.t3 }}>3 GB · 15 days</div>
+            </Col>
+            <div style={{ fontSize:20, fontWeight:800, color:T.t1 }}>$12.00</div>
+          </Row>
+          <Col gap={8} style={{ marginBottom:20 }}>
+            {[['Networks','NTT Docomo, SoftBank'],['Validity','15 days from activation'],['Hotspot','Full tethering included']].map(([k,v])=>(
+              <Row key={k} style={{ justifyContent:'space-between' }}>
+                <span style={{ fontSize:12, color:T.t3 }}>{k}</span>
+                <span style={{ fontSize:12, fontWeight:600, color:T.t1 }}>{v}</span>
+              </Row>
+            ))}
+          </Col>
+          <button style={{ width:'100%', height:50, borderRadius:9999, background:'#fff', color:T.bg0, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:14, border:'none', cursor:'pointer' }}>Buy now — $12.00</button>
+        </div>
+      </div>
+
+      <Divider>Toast notifications</Divider>
+      <Col gap={8}>
+        {[
+          ['CheckCircle',T.mint,'rgba(62,224,162,0.10)','rgba(62,224,162,0.25)','eSIM activated!','Japan 3 GB is now live.'],
+          ['AlertCircle',T.red,'rgba(239,68,68,0.10)','rgba(239,68,68,0.25)','Payment failed','Try a different card.'],
+          ['Bell',T.blueL,T.blueSoft,'rgba(0,127,255,0.2)','Data alert: 200 MB left','Top up to stay connected.'],
+        ].map(([icon,color,bg,border,msg,sub])=>(
+          <Row key={msg} gap={12} align="flex-start" style={{ padding:'11px 14px', borderRadius:14, background:bg, border:`1px solid ${border}`, maxWidth:340 }}>
+            <span style={{ color, display:'flex', marginTop:1, flexShrink:0 }}><Icon name={icon} size={17} /></span>
+            <Col gap={2} style={{ flex:1 }}>
+              <div style={{ fontSize:13, fontWeight:700, color:T.t1 }}>{msg}</div>
+              <div style={{ fontSize:12, color:T.t2 }}>{sub}</div>
+            </Col>
+            <button style={{ color:T.t4, background:'none', border:'none', cursor:'pointer', display:'flex', flexShrink:0 }}><Icon name="X" size={14} /></button>
+          </Row>
+        ))}
+      </Col>
+    </Col>
+  );
+}
+
+// ─── 10. ICONOGRAPHY ────────────────────────────────────────────────────────
+function IconsKit() {
+  const icons = ['Globe','Smartphone','Wifi','Zap','Shield','Bell','CreditCard','Wallet','User','Settings','Search','Home','Layers','BarChart2','TrendingUp','Gift','Share2','ArrowRight','ArrowLeft','Check','CheckCircle','AlertCircle','AlertTriangle','Info','Plus','Minus','X','QrCode','Download','Upload','Lock','Mail','Phone','Map','Navigation','RefreshCcw','RotateCcw','Clock','Calendar','Star','Heart','Bookmark','HelpCircle','ChevronRight','ChevronDown','Plane','Globe2','MapPin','Headphones'];
+  return (
+    <Col gap={14}>
+      <KitLabel>Iconography — Lucide (1.8px stroke)</KitLabel>
+      <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+        {icons.map(name=>(
+          <div key={name} style={{ width:44, height:44, borderRadius:11, background:T.bg2, border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center', color:T.t2 }} title={name}>
+            <Icon name={name} size={20} />
+          </div>
+        ))}
+      </div>
+      <Divider>Icon chip sizes</Divider>
+      <Row gap={14} align="flex-end">
+        {[{size:16,chip:32,r:8,label:'32px'},{size:18,chip:40,r:11,label:'40px'},{size:20,chip:48,r:13,label:'48px'},{size:24,chip:56,r:16,label:'56px'}].map(({size,chip,r,label})=>(
+          <Col key={chip} gap={6} style={{ alignItems:'center' }}>
+            <div style={{ width:chip, height:chip, borderRadius:r, background:T.blueSoft, border:'1px solid rgba(0,127,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', color:T.blueL }}>
+              <Icon name="Globe" size={size} />
+            </div>
+            <div style={{ fontSize:10, color:T.t3 }}>{label}</div>
+          </Col>
+        ))}
+      </Row>
+    </Col>
+  );
+}
+
+// ─── 11. SPACING & RADII ────────────────────────────────────────────────────
+function SpacingKit() {
+  return (
+    <Col gap={16}>
+      <KitLabel>Spacing scale</KitLabel>
+      <Col gap={6}>
+        {[4,8,12,16,20,24,32,40,48].map(s=>(
+          <Row key={s} gap={12} align="center">
+            <div style={{ width:s, height:s, background:T.blue, borderRadius:2, flexShrink:0, minWidth:s }} />
+            <div style={{ fontFamily:'JetBrains Mono,monospace', fontSize:11, color:T.t3, width:32 }}>{s}px</div>
+            <div style={{ flex:1, height:1, background:T.b1 }} />
+          </Row>
+        ))}
+      </Col>
+      <Divider>Border radii</Divider>
+      <Row gap={10} wrap>
+        {[{r:4,label:'4px',use:'Chip'},{r:8,label:'8px',use:'Badge'},{r:12,label:'12px',use:'Input'},{r:16,label:'16px',use:'Card SM'},{r:20,label:'20px',use:'Card'},{r:24,label:'24px',use:'Card LG'},{r:28,label:'28px',use:'Modal'},{r:9999,label:'∞',use:'Pill'}].map(({r,label,use})=>(
+          <Col key={label} gap={5} style={{ alignItems:'center' }}>
+            <div style={{ width:52, height:52, borderRadius:r, background:T.bg2, border:`1px solid ${T.b1}` }} />
+            <div style={{ fontSize:10, fontWeight:700, color:T.t2, fontFamily:'JetBrains Mono,monospace' }}>{label}</div>
+            <div style={{ fontSize:10, color:T.t3 }}>{use}</div>
+          </Col>
+        ))}
+      </Row>
+    </Col>
+  );
+}
+
+// ─── 12. SHADOWS & EFFECTS ──────────────────────────────────────────────────
+function ShadowsKit() {
+  return (
+    <Col gap={16}>
+      <KitLabel>Shadows & elevation</KitLabel>
+      <Row gap={14} wrap>
+        {[['shadow-sm','0 1px 2px rgba(0,0,0,0.4)','Badges'],['shadow-card','0 4px 12px rgba(0,0,0,0.3)','Cards'],['shadow-lg','0 8px 24px rgba(0,0,0,0.5)','Modals'],['glow-blue','0 0 32px rgba(0,127,255,0.3)','CTAs'],['glow-mint','0 0 24px rgba(62,224,162,0.2)','Success']].map(([label,shadow,use])=>(
+          <Col key={label} gap={8} style={{ alignItems:'center' }}>
+            <div style={{ width:68, height:68, borderRadius:18, background:T.bg2, boxShadow:shadow }} />
+            <div style={{ fontSize:10, fontWeight:700, color:T.t2, fontFamily:'JetBrains Mono,monospace', textAlign:'center' }}>{label}</div>
+            <div style={{ fontSize:10, color:T.t3, textAlign:'center' }}>{use}</div>
+          </Col>
+        ))}
+      </Row>
+      <Divider>Glass morphism</Divider>
+      <Row gap={10}>
+        {[
+          ['glass','rgba(255,255,255,0.04)','rgba(255,255,255,0.04)',T.b1],
+          ['glass-strong','linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))',null,T.b1],
+          ['glass-accent','linear-gradient(135deg,rgba(0,127,255,0.15),rgba(0,127,255,0.05))',null,'rgba(0,127,255,0.2)'],
+        ].map(([label,bg,,border])=>(
+          <div key={label} style={{ flex:1, padding:'16px 14px', borderRadius:18, background:bg, border:`1px solid ${border}`, backdropFilter:'blur(20px)' }}>
+            <div style={{ fontSize:11, fontWeight:700, color:T.t1, marginBottom:4 }}>{label}</div>
+            <div style={{ fontSize:10, color:T.t3 }}>blur(20px)</div>
+          </div>
+        ))}
+      </Row>
+    </Col>
+  );
+}
+
+// ─── 13. PHONE SCREENS ──────────────────────────────────────────────────────
+function PhoneFrame({ children, label }) {
+  return (
+    <Col gap={12} style={{ alignItems:'center', flexShrink:0 }}>
+      <div style={{ width:260, height:540, borderRadius:46, padding:10, background:'linear-gradient(160deg,#1a2942,#0a1424)', boxShadow:'0 0 0 1.5px rgba(255,255,255,0.07),0 30px 80px rgba(0,0,0,0.7),0 0 80px rgba(0,127,255,0.2)' }}>
+        <div style={{ width:'100%', height:'100%', borderRadius:38, overflow:'hidden', background:T.bg0, position:'relative' }}>
+          {/* notch */}
+          <div style={{ position:'absolute', top:0, left:0, right:0, height:22, background:T.bg2, zIndex:9 }} />
+          <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)', width:72, height:22, background:'#0a1424', borderRadius:'0 0 12px 12px', zIndex:10 }} />
+          <div style={{ paddingTop:24, height:'100%', overflow:'hidden' }}>
+            {children}
+          </div>
+        </div>
+      </div>
+      {label && <div style={{ fontSize:11, fontWeight:700, color:T.t4, letterSpacing:'0.08em', textTransform:'uppercase' }}>{label}</div>}
+    </Col>
+  );
+}
+
+function HomeScreen() {
+  return (
+    <div style={{ padding:'10px 14px', height:'100%', overflowY:'auto', background:T.bg0, fontFamily:'Manrope,sans-serif' }}>
+      <Row align="center" style={{ marginBottom:16, justifyContent:'space-between' }}>
+        <Col gap={2}>
+          <div style={{ fontSize:10, color:T.t3 }}>Good morning,</div>
+          <div style={{ fontSize:14, fontWeight:800, color:'#fff' }}>Alex S. 👋</div>
+        </Col>
+        <Row gap={7}>
+          <div style={{ width:28, height:28, borderRadius:8, background:'rgba(255,255,255,0.06)', border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center', color:T.t3 }}><Icon name="Bell" size={14} /></div>
+          <div style={{ width:28, height:28, borderRadius:8, background:`linear-gradient(135deg,${T.blue},#0051a8)`, display:'flex', alignItems:'center', justifyContent:'center' }}><span style={{ fontSize:10, fontWeight:700, color:'#fff' }}>AS</span></div>
+        </Row>
+      </Row>
+      <div style={{ padding:'14px 16px', borderRadius:18, background:'linear-gradient(135deg,#0a1c3e,#051226)', border:'1px solid rgba(0,127,255,0.2)', marginBottom:12, position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', right:-20, top:-20, width:100, height:100, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,127,255,0.2),transparent 70%)' }} />
+        <div style={{ fontSize:10, color:T.t3, textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:3 }}>Balance</div>
+        <div style={{ fontSize:24, fontWeight:800, color:'#fff', marginBottom:3 }}>$24.50</div>
+        <div style={{ fontSize:11, color:T.mint }}>+$2.50 cashback</div>
+        <Row gap={6} style={{ marginTop:12 }}>
+          <button style={{ flex:1, height:32, borderRadius:9999, background:'#fff', color:T.bg0, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:11, border:'none', cursor:'pointer' }}>Top up</button>
+          <button style={{ flex:1, height:32, borderRadius:9999, background:'rgba(255,255,255,0.07)', color:'#fff', fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:11, border:`1px solid ${T.b1}`, cursor:'pointer' }}>History</button>
+        </Row>
+      </div>
+      <div style={{ fontSize:10, fontWeight:700, color:T.t3, textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:7 }}>Active plan</div>
+      <div style={{ padding:'12px 14px', borderRadius:16, background:T.bg2, border:`1px solid ${T.b1}`, marginBottom:12 }}>
+        <Row align="center" style={{ marginBottom:8 }}>
+          <div style={{ fontSize:16 }}>🇯🇵</div>
+          <Col gap={1} style={{ flex:1, marginLeft:9 }}>
+            <div style={{ fontSize:12, fontWeight:700, color:'#fff' }}>Japan</div>
+            <div style={{ fontSize:10, color:T.t3 }}>3 GB · Expires Jun 12</div>
+          </Col>
+          <div style={{ padding:'3px 7px', borderRadius:9999, background:'rgba(62,224,162,0.12)', fontSize:10, fontWeight:700, color:T.mint }}>Active</div>
+        </Row>
+        <div style={{ height:3, borderRadius:2, background:'rgba(255,255,255,0.06)' }}>
+          <div style={{ height:'100%', width:'68%', borderRadius:2, background:`linear-gradient(90deg,${T.blue},${T.blueL})` }} />
+        </div>
+        <div style={{ fontSize:10, color:T.t4, marginTop:4 }}>2.04 GB of 3 GB remaining</div>
+      </div>
+      <div style={{ fontSize:10, fontWeight:700, color:T.t3, textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:7 }}>Quick actions</div>
+      <Row gap={6}>
+        {[['Globe','Explore'],['Plus','Add eSIM'],['Zap','Top up'],['Share2','Refer']].map(([icon,label])=>(
+          <Col key={icon} gap={4} style={{ flex:1, alignItems:'center', padding:'9px 4px', borderRadius:12, background:T.bg2, border:`1px solid ${T.b1}`, cursor:'pointer' }}>
+            <div style={{ width:28, height:28, borderRadius:8, background:T.blueSoft, display:'flex', alignItems:'center', justifyContent:'center', color:T.blueL }}><Icon name={icon} size={14} /></div>
+            <div style={{ fontSize:9, fontWeight:600, color:T.t2, textAlign:'center', lineHeight:1.3 }}>{label}</div>
+          </Col>
+        ))}
+      </Row>
+    </div>
+  );
+}
+
+function ExploreScreen() {
+  return (
+    <div style={{ padding:'10px 14px', height:'100%', overflowY:'auto', background:T.bg0, fontFamily:'Manrope,sans-serif' }}>
+      <div style={{ fontSize:16, fontWeight:800, color:'#fff', marginBottom:12 }}>Explore</div>
+      <div style={{ display:'flex', alignItems:'center', gap:9, padding:'0 13px', height:40, borderRadius:9999, background:T.bg2, border:`1px solid ${T.b1}`, marginBottom:14 }}>
+        <span style={{ color:T.t4, display:'flex' }}><Icon name="Search" size={15} /></span>
+        <span style={{ fontSize:12, color:T.t4 }}>Search countries, regions…</span>
+      </div>
+      <Row gap={6} style={{ marginBottom:13, overflowX:'auto' }}>
+        {['All','Asia','Europe','Americas','Middle East'].map((t,i)=>(
+          <div key={t} style={{ padding:'5px 11px', borderRadius:9999, background:i===0?T.blue:T.bg2, border:i===0?'none':`1px solid ${T.b1}`, fontSize:11, fontWeight:700, color:i===0?'#fff':T.t3, cursor:'pointer', flexShrink:0 }}>{t}</div>
+        ))}
+      </Row>
+      <Col gap={7}>
+        {[['🇯🇵','Japan','12 plans from $9','Popular'],['🇫🇷','France','8 plans from $11',null],['🇩🇪','Germany','8 plans from $10',null],['🇸🇬','Singapore','6 plans from $8','Best value']].map(([flag,name,sub,badge])=>(
+          <div key={name} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', borderRadius:14, background:T.bg2, border:`1px solid ${T.b1}`, cursor:'pointer' }}>
+            <div style={{ fontSize:20, flexShrink:0 }}>{flag}</div>
+            <Col gap={1} style={{ flex:1 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:'#fff' }}>{name}</div>
+              <div style={{ fontSize:10, color:T.t3 }}>{sub}</div>
+            </Col>
+            {badge && <div style={{ padding:'2px 7px', borderRadius:9999, background:'rgba(62,224,162,0.12)', fontSize:9, fontWeight:700, color:T.mint }}>{badge}</div>}
+            <span style={{ color:T.t4, display:'flex' }}><Icon name="ChevronRight" size={14} /></span>
+          </div>
+        ))}
+      </Col>
+    </div>
+  );
+}
+
+function QrScreen() {
+  return (
+    <div style={{ padding:'10px 14px', height:'100%', background:T.bg0, fontFamily:'Manrope,sans-serif' }}>
+      <Row align="center" style={{ marginBottom:16 }}>
+        <div style={{ width:26, height:26, borderRadius:7, background:'rgba(255,255,255,0.06)', border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center', color:T.t2 }}><Icon name="ArrowLeft" size={13} /></div>
+        <div style={{ flex:1, textAlign:'center', fontSize:13, fontWeight:700, color:'#fff' }}>Install eSIM</div>
+        <div style={{ width:26, height:26 }} />
+      </Row>
+      <div style={{ textAlign:'center', marginBottom:14 }}>
+        <div style={{ fontSize:10, textTransform:'uppercase', letterSpacing:'0.07em', color:T.t3, marginBottom:3 }}>Japan 3 GB · 15 days</div>
+        <div style={{ fontSize:14, fontWeight:700, color:'#fff' }}>Scan to activate</div>
+      </div>
+      <div style={{ width:150, height:150, margin:'0 auto 14px', borderRadius:18, background:T.bg2, border:`1px solid ${T.b1}`, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', inset:0, display:'grid', gridTemplateColumns:'repeat(8,1fr)', gridTemplateRows:'repeat(8,1fr)', padding:10, gap:3 }}>
+          {Array.from({length:64}).map((_,i)=>(
+            <div key={i} style={{ borderRadius:2, background:Math.random()>0.42?'rgba(255,255,255,0.65)':'transparent' }} />
+          ))}
+        </div>
+        <div style={{ position:'absolute', width:34, height:34, borderRadius:9, background:T.bg0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:18, height:18, borderRadius:5, background:`linear-gradient(135deg,${T.blue},${T.blueL})` }} />
+        </div>
+      </div>
+      <div style={{ padding:'10px 12px', borderRadius:12, background:T.bg2, border:`1px solid ${T.b1}`, marginBottom:10 }}>
+        <div style={{ fontSize:9, color:T.t3, marginBottom:3 }}>Or enter manually:</div>
+        <div style={{ fontSize:9, fontFamily:'JetBrains Mono,monospace', color:T.blueL, wordBreak:'break-all', lineHeight:1.6 }}>LPA:1$smdp.eim.net$MATCH-ID-JP</div>
+      </div>
+      <button style={{ width:'100%', height:44, borderRadius:9999, background:'#fff', color:T.bg0, fontFamily:'Manrope,sans-serif', fontWeight:700, fontSize:13, border:'none', cursor:'pointer' }}>Open Settings →</button>
+    </div>
+  );
+}
+
+function ScreensKit() {
+  return (
+    <Col gap={0}>
+      <KitLabel>Live interactive app screens</KitLabel>
+      <Row gap={20} align="flex-start" style={{ flexWrap:'wrap' }}>
+        <PhoneFrame label="Home"><HomeScreen /></PhoneFrame>
+        <PhoneFrame label="Explore"><ExploreScreen /></PhoneFrame>
+        <PhoneFrame label="Install eSIM"><QrScreen /></PhoneFrame>
+      </Row>
+    </Col>
+  );
+}
+
+// ─── TWEAKS ─────────────────────────────────────────────────────────────────
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "showScreens": true,
+  "accent": "#007fff"
+}/*EDITMODE-END*/;
+
+// ─── MAIN ───────────────────────────────────────────────────────────────────
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  return (
+    <>
+      <DesignCanvas>
+        <DCSection id="colors" title="Colors & tokens" subtitle="Palette, text, border tokens">
+          <DCArtboard id="colors-main" label="Color system" width={560}>
+            <Card><ColorsKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="type" title="Typography" subtitle="Type scale — Manrope + JetBrains Mono">
+          <DCArtboard id="type-main" label="Type scale" width={600}>
+            <Card><TypoKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="buttons" title="Buttons" subtitle="All sizes, variants, and states">
+          <DCArtboard id="btn-main" label="Buttons" width={560}>
+            <Card><ButtonsKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="inputs" title="Form inputs" subtitle="Fields, toggles, checkboxes, segments">
+          <DCArtboard id="inp-main" label="Form inputs" width={480}>
+            <Card><InputsKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="badges" title="Badges & tags" subtitle="Status, country, feature, data chips">
+          <DCArtboard id="badges-main" label="Badges" width={520}>
+            <Card><BadgesKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="cards" title="Cards" subtitle="Plan, wallet, destination, alerts">
+          <DCArtboard id="cards-main" label="Cards" width={540}>
+            <Card><CardsKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="list" title="List items" subtitle="Settings rows, transactions">
+          <DCArtboard id="list-main" label="List items" width={480}>
+            <Card><ListKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="nav" title="Navigation" subtitle="Tab bars, headers, back bars">
+          <DCArtboard id="nav-main" label="Navigation" width={520}>
+            <Card><NavKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="modals" title="Modals & sheets" subtitle="Dialogs, bottom sheets, toasts">
+          <DCArtboard id="modals-main" label="Modals" width={480}>
+            <Card><ModalsKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        {tweaks.showScreens && (
+          <DCSection id="screens" title="App screens" subtitle="Live interactive phone mockups">
+            <DCArtboard id="screens-main" label="Screens" width={900}>
+              <Card><ScreensKit /></Card>
+            </DCArtboard>
+          </DCSection>
+        )}
+
+        <DCSection id="icons" title="Iconography" subtitle="Lucide icon library, chip sizes">
+          <DCArtboard id="icons-main" label="Icons" width={600}>
+            <Card><IconsKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="spacing" title="Spacing & radii" subtitle="Scale system and border radii">
+          <DCArtboard id="spacing-main" label="Spacing" width={480}>
+            <Card><SpacingKit /></Card>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="shadows" title="Shadows & effects" subtitle="Elevation levels and glass morphism">
+          <DCArtboard id="shadows-main" label="Shadows" width={560}>
+            <Card><ShadowsKit /></Card>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel>
+        <TweakSection label="Kit options" />
+        <TweakToggle label="Show live screens" value={tweaks.showScreens} onChange={v => setTweak('showScreens', v)} />
+        <TweakSection label="Brand" />
+        <TweakColor label="Accent color" value={tweaks.accent} options={['#007fff','#6c3de8','#ef4444','#3ee0a2']} onChange={v => setTweak('accent', v)} />
+      </TweaksPanel>
+    </>
+  );
+}
+
+// Reset saved viewport position so canvas always starts at a sane location
+try {
+  const vpKey = 'dc-viewport:' + location.pathname;
+  const saved = JSON.parse(localStorage.getItem(vpKey) || 'null');
+  // If saved position is far offscreen (y > viewport height * 2), reset it
+  if (saved && (Math.abs(saved.y) > window.innerHeight * 2 || Math.abs(saved.x) > window.innerWidth * 2)) {
+    localStorage.removeItem(vpKey);
+  }
+} catch(e) {}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

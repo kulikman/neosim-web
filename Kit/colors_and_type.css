@@ -1,0 +1,202 @@
+/* ==============================================================
+   2SkyMobile Design System — Colors & Type
+   Sourced from src/app/globals.css and src/lib/fonts.ts
+   ============================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  /* ---------- Type Stacks ---------- */
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* ---------- Color · Sky Blue (CTA, links, icons) ---------- */
+  --color-electric: #026bd4;
+  --color-electric-light: #1a7ee8;
+  --color-electric-glow: rgba(2, 107, 212, 0.15);
+
+  /* ---------- Color · Deep Navy (text, dark surfaces) ---------- */
+  --color-navy-950: #060a14;
+  --color-navy-900: #0f1729;
+  --color-navy-800: #0d1f3c;
+  --color-navy-700: #132d54;
+  --color-navy-600: #1a3d6d;
+
+  /* ---------- Color · Slate (secondary text) ---------- */
+  --color-slate: #5e6a7d;
+  --color-slate-light: #7a90b0;
+  --color-slate-400: #94a3b8;
+
+  /* ---------- Color · Surface (page bg, nav backdrop) ---------- */
+  --color-surface: #f6f7f9;
+  --color-surface-card: #ffffff;
+  --color-surface-alt: #f0f2f5;
+  --color-surface-dark: #0f1729;
+
+  /* ---------- Color · Semantic Accents ---------- */
+  --color-accent-green: #3ee0a2;   /* success, positive deltas */
+  --color-accent-amber: #f59e0b;   /* warning */
+  --color-accent-red: #ef4444;     /* error / destructive */
+
+  /* ---------- Color · Borders ---------- */
+  --color-border: #e8eaf0;
+  --color-border-muted: rgba(232, 234, 240, 0.6);
+
+  /* ---------- Shadows ---------- */
+  --shadow-card: 0 1px 2px rgba(15, 23, 41, 0.04);
+  --shadow-card-hover: 0 4px 12px rgba(15, 23, 41, 0.06);
+  --shadow-dashboard: 0 8px 24px rgba(15, 23, 41, 0.08);
+  --shadow-glow: 0 0 40px rgba(2, 107, 212, 0.12);
+
+  /* ---------- Radii ---------- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;        /* default for cards, dashboard widgets */
+  --radius-xl: 24px;
+  --radius-full: 9999px;    /* pills, badges, primary CTAs */
+
+  /* ---------- Spacing scale (Tailwind 4 conventions) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;   /* section-padding y */
+  --space-32: 128px;  /* section-padding y on large */
+
+  /* ---------- Foreground / Background semantic vars ---------- */
+  --fg-1: var(--color-navy-900);   /* primary text */
+  --fg-2: var(--color-slate);      /* body / secondary text */
+  --fg-3: var(--color-slate-400);  /* muted, captions */
+  --fg-link: var(--color-electric);
+
+  --bg-page: var(--color-surface);
+  --bg-card: var(--color-surface-card);
+  --bg-alt: var(--color-surface-alt);
+  --bg-dark: var(--color-surface-dark);
+}
+
+/* ---------- Base ---------- */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-page);
+  color: var(--fg-1);
+}
+::selection { background: rgba(2, 107, 212, 0.20); color: var(--color-navy-900); }
+
+/* ==============================================================
+   Semantic Type Scale
+   Direct port of utility classes in globals.css
+   ============================================================== */
+
+.h1-hero {            /* hero page H1 */
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 72px;
+  line-height: 1.05;
+  letter-spacing: -1.44px;
+  color: var(--fg-1);
+}
+.h2-section {         /* section heading */
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 52px;
+  line-height: 1.1;
+  letter-spacing: -1.04px;
+  color: var(--fg-1);
+}
+.h3-card {            /* card / sub-section heading */
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.2px;
+  color: var(--fg-1);
+}
+.h4-eyebrow {         /* small bold labels */
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--fg-1);
+}
+.lead {               /* hero / page-lead H1 sub-line */
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: -0.2px;
+  color: var(--color-navy-800);
+}
+.body-lg, .body {     /* default paragraph */
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.55;
+  letter-spacing: -0.2px;
+  color: var(--fg-2);
+}
+.body-md {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--fg-2);
+}
+.body-sm {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg-2);
+}
+.caption {            /* tiny, all-caps, wide tracking */
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.caption-wide {       /* footer column titles */
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.mono {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0;
+  color: var(--fg-3);
+}
+.gradient-text {
+  background: linear-gradient(90deg, var(--color-electric), var(--color-electric-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Defaults so plain HTML reads correctly */
+h1 { font: 700 72px/1.05 var(--font-sans); letter-spacing: -1.44px; color: var(--fg-1); }
+h2 { font: 700 52px/1.1  var(--font-sans); letter-spacing: -1.04px; color: var(--fg-1); }
+h3 { font: 700 20px/1.3  var(--font-sans); letter-spacing: -0.2px; color: var(--fg-1); }
+p  { font: 400 16px/1.55 var(--font-sans); color: var(--fg-2); }
+code, pre { font: 400 13px/1.5 var(--font-mono); color: var(--fg-1); }
+a { color: var(--fg-link); text-decoration: none; }
+a:hover { color: var(--color-electric-light); }
