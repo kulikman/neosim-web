@@ -17,14 +17,16 @@ export function CurrencyPicker(): React.ReactElement {
           height: 36,
           padding: "0 12px",
           borderRadius: 999,
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid var(--border)",
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.10)",
           color: "#fff",
           fontSize: 13,
           cursor: "pointer",
           display: "inline-flex",
           alignItems: "center",
           gap: 8,
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
         }}
       >
         <span>{cur.flag}</span>
@@ -40,7 +42,6 @@ export function CurrencyPicker(): React.ReactElement {
             style={{ position: "fixed", inset: 0, zIndex: 60 }}
           />
           <div
-            className="glass-strong"
             style={{
               position: "absolute",
               top: "calc(100% + 8px)",
@@ -50,6 +51,12 @@ export function CurrencyPicker(): React.ReactElement {
               padding: 6,
               maxHeight: 320,
               overflowY: "auto",
+              background: "rgba(5,12,26,0.88)",
+              backdropFilter: "blur(52px)",
+              WebkitBackdropFilter: "blur(52px)",
+              border: "1px solid rgba(255,255,255,0.10)",
+              borderRadius: 18,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.55)",
             }}
           >
             {all.map((c) => (

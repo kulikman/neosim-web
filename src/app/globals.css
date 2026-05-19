@@ -89,6 +89,12 @@
   --ns-border-2:    rgba(255, 255, 255, 0.14);
   --ns-glass:       rgba(255, 255, 255, 0.04);
   --ns-glass-2:     rgba(255, 255, 255, 0.06);
+  /* ─── Blur tokens ──────────────────────────────────────── */
+  --blur-xs:  8px;   /* interactive: btn-icon, field, pill */
+  --blur-sm:  12px;  /* vtab active, seg active */
+  --blur-md:  20px;  /* nav dropdowns, overlays */
+  --blur-lg:  28px;  /* .glass panels */
+  --blur-xl:  52px;  /* .glass-strong — hero card, footer CTA */
   /* aliases used by inline-style components */
   --text-1:         #ffffff;
   --text-2:         rgba(255, 255, 255, 0.72);
@@ -126,15 +132,15 @@
     background: var(--ns-glass);
     border: 1px solid var(--ns-border);
     border-radius: 28px;
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(var(--blur-lg));
+    -webkit-backdrop-filter: blur(var(--blur-lg));
   }
   .glass-strong {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
     border: 1px solid var(--ns-border);
     border-radius: 28px;
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(var(--blur-xl));
+    -webkit-backdrop-filter: blur(var(--blur-xl));
   }
 
   /* ─── Pill badge ─────────────────────────────────────────────────── */
@@ -149,6 +155,8 @@
     font-size: 14px;
     font-weight: 500;
     color: var(--ns-text);
+    backdrop-filter: blur(var(--blur-xs));
+    -webkit-backdrop-filter: blur(var(--blur-xs));
   }
   .pill-icon {
     width: 44px;
@@ -160,6 +168,8 @@
     background: var(--ns-glass);
     border: 1px solid var(--ns-border);
     color: var(--ns-text);
+    backdrop-filter: blur(var(--blur-xs));
+    -webkit-backdrop-filter: blur(var(--blur-xs));
   }
 
   /* ─── Dot grid background ────────────────────────────────────────── */
@@ -329,8 +339,8 @@
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.10);
     color: #ffffff;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(var(--blur-xs));
+    -webkit-backdrop-filter: blur(var(--blur-xs));
   }
   .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.10);
@@ -348,6 +358,8 @@
     cursor: pointer;
     transition: all 0.2s;
     flex-shrink: 0;
+    backdrop-filter: blur(var(--blur-xs));
+    -webkit-backdrop-filter: blur(var(--blur-xs));
   }
   .btn-icon:hover {
     background: rgba(255, 255, 255, 0.10);
@@ -362,6 +374,8 @@
     color: #ffffff;
     cursor: pointer;
     transition: all 0.2s;
+    backdrop-filter: blur(var(--blur-xs));
+    -webkit-backdrop-filter: blur(var(--blur-xs));
   }
 
   /* ─── Form fields ────────────────────────────────────────────────── */
@@ -377,6 +391,8 @@
     color: #ffffff;
     font-size: 14px;
     transition: border-color 0.2s;
+    backdrop-filter: blur(var(--blur-xs));
+    -webkit-backdrop-filter: blur(var(--blur-xs));
     text-align: left;
     width: 100%;
   }
@@ -427,6 +443,8 @@
     background: rgba(0, 127, 255, 0.12);
     border-color: rgba(0, 127, 255, 0.3);
     color: #ffffff;
+    backdrop-filter: blur(var(--blur-sm));
+    -webkit-backdrop-filter: blur(var(--blur-sm));
   }
 
   /* ─── Destination cards ──────────────────────────────────────────── */
@@ -481,6 +499,8 @@
   .seg button.active {
     background: rgba(255, 255, 255, 0.12);
     color: #ffffff;
+    backdrop-filter: blur(var(--blur-xs));
+    -webkit-backdrop-filter: blur(var(--blur-xs));
   }
 
   /* ─── Phone frame ────────────────────────────────────────────────── */
