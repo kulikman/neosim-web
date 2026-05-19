@@ -32,7 +32,7 @@ export function Cta(): React.ReactElement {
 
           <div className="relative">
             <p className="caption mb-6 text-[#66b7ff]">Get started free</p>
-            <h2 className="mb-6 text-[clamp(36px,6vw,72px)] font-bold leading-[1.05] tracking-[-1.8px]">
+            <h2 className="mb-6 text-[clamp(28px,4.6vw,56px)] font-bold leading-[1.05] tracking-[-1.2px]">
               Land anywhere.
               <br />
               <span className="gradient-text">Connect instantly.</span>

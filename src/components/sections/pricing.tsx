@@ -21,7 +21,7 @@ export function Pricing(): React.ReactElement {
           {/* Left: copy + feature grid */}
           <div>
             <p className="caption mb-4 text-[#66b7ff]">Pricing</p>
-            <h2 className="mb-6 text-[clamp(34px,5vw,62px)] font-bold leading-[1.05] tracking-[-1.8px]">
+            <h2 className="mb-6 text-[clamp(26px,3.8vw,48px)] font-bold leading-[1.05] tracking-[-1.2px]">
               Pay for the gigabytes
               <br />
               you use.{" "}

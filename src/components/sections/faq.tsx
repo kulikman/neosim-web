@@ -21,7 +21,7 @@ export function Faq(): React.ReactElement {
       <div className="relative mx-auto max-w-[800px] px-5 sm:px-8">
         <div className="mb-12">
           <p className="caption mb-4 text-[#66b7ff]">FAQ</p>
-          <h2 className="text-[clamp(34px,5vw,62px)] font-bold leading-[1.05] tracking-[-1.8px]">
+          <h2 className="text-[clamp(26px,3.8vw,48px)] font-bold leading-[1.05] tracking-[-1.2px]">
             The <span className="gradient-text">small print</span>, made plain.
           </h2>
         </div>

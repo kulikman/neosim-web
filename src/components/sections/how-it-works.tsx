@@ -32,7 +32,7 @@ export function HowItWorks(): React.ReactElement {
         <div className="mb-16 flex flex-wrap items-end justify-between gap-8">
           <div>
             <p className="caption mb-4 text-[#66b7ff]">How it works</p>
-            <h2 className="text-[clamp(34px,5vw,62px)] font-bold leading-[1.05] tracking-[-1.8px]">
+            <h2 className="text-[clamp(26px,3.8vw,48px)] font-bold leading-[1.05] tracking-[-1.2px]">
               From order to online
               <br />
               <span className="gradient-text">in under 2 minutes.</span>

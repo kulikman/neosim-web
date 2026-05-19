@@ -290,7 +290,7 @@ export function Wallet(): React.ReactElement {
         {/* Heading */}
         <div className="mb-14 text-center">
           <p className="caption mb-4 text-[#66b7ff]">Wallet app</p>
-          <h2 className="text-[clamp(34px,5vw,62px)] font-bold leading-[1.05] tracking-[-1.8px]">
+          <h2 className="text-[clamp(26px,3.8vw,48px)] font-bold leading-[1.05] tracking-[-1.2px]">
             One wallet. 150+ countries.
             <br />
             <span className="gradient-text">Every trip.</span>
