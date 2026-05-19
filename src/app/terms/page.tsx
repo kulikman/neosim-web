@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -39,46 +40,53 @@ const SECTIONS = [
 
 export default function TermsPage(): React.ReactElement {
   return (
-    <section style={{ paddingTop: 140, paddingBottom: 100, position: "relative", overflow: "hidden", minHeight: "100vh" }}>
-      <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden />
-      <div className="container" style={{ position: "relative", maxWidth: 760 }}>
-        <Link
-          href={ROUTES.home}
-          style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--text-3)", fontSize: 13, marginBottom: 32, textDecoration: "none" }}
-        >
-          <ArrowLeft size={14} /> Back to home
-        </Link>
-        <p className="caption" style={{ color: "#66b7ff", marginBottom: 16 }}>Legal</p>
-        <h1 className="ty-1" style={{ margin: 0, marginBottom: 16 }}>Terms of Service</h1>
-        <p className="lead" style={{ marginBottom: 48, maxWidth: 640 }}>
-          Last updated January 2026. Plain-English summary at the top of each section.
-        </p>
+    <>
+      <section style={{ position: "relative", minHeight: 440, paddingTop: 96, overflow: "hidden", background: "#00040c" }}>
+        <Image src="/assets/earth.jpg" alt="" fill priority style={{ objectFit: "cover", objectPosition: "center bottom", zIndex: 0 }} sizes="100vw" aria-hidden />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(180deg, rgba(0,6,15,0.45) 0%, rgba(0,6,15,0.25) 50%, rgba(0,10,23,0.65) 85%, var(--bg-deep) 100%)" }} aria-hidden />
+        <div className="aurora" style={{ zIndex: 2, opacity: 0.4 }} aria-hidden />
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 180, background: "linear-gradient(180deg, transparent, var(--bg-deep))", zIndex: 2 }} aria-hidden />
+        <div className="container" style={{ position: "relative", zIndex: 3, paddingTop: 32, paddingBottom: 80 }}>
+          <Link href={ROUTES.home} style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.55)", fontSize: 13, marginBottom: 40, textDecoration: "none" }}>
+            <ArrowLeft size={14} /> Back to home
+          </Link>
+          <p className="caption" style={{ color: "#66b7ff", marginBottom: 20 }}>Legal</p>
+          <h1 className="ty-display" style={{ margin: 0, marginBottom: 24, maxWidth: 640 }}>
+            Terms of Service
+          </h1>
+          <p className="lead" style={{ maxWidth: 520, margin: 0 }}>
+            Last updated January 2026. Plain-English summary at the top of each section.
+          </p>
+        </div>
+      </section>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 40 }}>
-          {SECTIONS.map((s, i) => (
-            <div key={s.t} className="glass" style={{ padding: 28 }}>
-              <div style={{ display: "flex", gap: 16 }}>
-                <div className="mono" style={{ minWidth: 40, color: "var(--text-3)", paddingTop: 2 }}>
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <h2 className="ty-4" style={{ margin: 0, marginBottom: 12 }}>{s.t}</h2>
-                  <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(0,127,255,0.08)", border: "1px solid rgba(0,127,255,0.2)", marginBottom: 12 }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: "#66b7ff", textTransform: "uppercase", letterSpacing: "0.05em" }}>Plain-English</span>
-                    <p style={{ fontSize: 14, color: "var(--text-2)", margin: "4px 0 0" }}>{s.short}</p>
+      <section style={{ paddingTop: 0, paddingBottom: 100 }}>
+        <div className="container" style={{ maxWidth: 760 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 40 }}>
+            {SECTIONS.map((s, i) => (
+              <div key={s.t} className="glass" style={{ padding: 28 }}>
+                <div style={{ display: "flex", gap: 16 }}>
+                  <div className="mono" style={{ minWidth: 40, color: "var(--text-3)", paddingTop: 2 }}>
+                    {String(i + 1).padStart(2, "0")}
                   </div>
-                  <p className="body-sm" style={{ margin: 0 }}>{s.long}</p>
+                  <div style={{ flex: 1 }}>
+                    <h2 className="ty-4" style={{ margin: 0, marginBottom: 12 }}>{s.t}</h2>
+                    <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(0,127,255,0.08)", border: "1px solid rgba(0,127,255,0.2)", marginBottom: 12 }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: "#66b7ff", textTransform: "uppercase", letterSpacing: "0.05em" }}>Plain-English</span>
+                      <p style={{ fontSize: 14, color: "var(--text-2)", margin: "4px 0 0" }}>{s.short}</p>
+                    </div>
+                    <p className="body-sm" style={{ margin: 0 }}>{s.long}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div style={{ padding: 24, borderRadius: 14, border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", fontSize: 13, color: "var(--text-3)" }}>
+            Questions? Email{" "}
+            <a href="mailto:legal@neosim.com" style={{ color: "var(--accent-light)" }}>legal@neosim.com</a>.
+          </div>
         </div>
-
-        <div style={{ padding: 24, borderRadius: 14, border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", fontSize: 13, color: "var(--text-3)" }}>
-          Questions? Email{" "}
-          <a href="mailto:legal@neosim.com" style={{ color: "var(--accent-light)" }}>legal@neosim.com</a>.
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
