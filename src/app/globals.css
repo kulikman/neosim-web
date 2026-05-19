@@ -125,6 +125,8 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    display: inline-block; /* prevents stacking context issues inside backdrop-filter parents */
+    position: relative;
   }
 
   /* ─── Glass surfaces ─────────────────────────────────────────────── */
@@ -134,6 +136,7 @@
     border-radius: 28px;
     backdrop-filter: blur(var(--blur-lg));
     -webkit-backdrop-filter: blur(var(--blur-lg));
+    isolation: isolate;
   }
   .glass-strong {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
@@ -141,6 +144,7 @@
     border-radius: 28px;
     backdrop-filter: blur(var(--blur-xl));
     -webkit-backdrop-filter: blur(var(--blur-xl));
+    isolation: isolate;
   }
 
   /* ─── Pill badge ─────────────────────────────────────────────────── */
