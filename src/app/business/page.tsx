@@ -9,10 +9,10 @@ import { TrustBlock } from "@/components/sections/trust-block";
 import { ROUTES } from "@/lib/constants";
 
 const FEATURES = [
-  { icon: <Users size={20} />, t: "Pooled data", d: "1 shared bucket across the team. No per-seat plans, no overages, no "who used too much" Slack threads." },
+  { icon: <Users size={20} />, t: "Pooled data", d: "1 shared bucket across the team. No per-seat plans, no overages, no 'who used too much' Slack threads." },
   { icon: <Lock size={20} />, t: "SAML + SCIM", d: "Provision and de-provision via Okta, Azure AD, or Google. Offboard a leaver and their eSIM dies in seconds." },
   { icon: <FileText size={20} />, t: "Real receipts", d: "Per-trip, per-employee, per-country line items. CSV export, NetSuite/Coupa hooks, GL coding." },
-  { icon: <Globe size={20} />, t: "150+ countries", d: "Same wholesale rates everywhere. No "high-cost destination" surcharge for sending people to Switzerland." },
+  { icon: <Globe size={20} />, t: "150+ countries", d: "Same wholesale rates everywhere. No 'high-cost destination' surcharge for sending people to Switzerland." },
   { icon: <Shield size={20} />, t: "SOC 2 Type II", d: "Full audit report under NDA. PCI-DSS for payments, GDPR-compliant data handling, EU-only data residency option." },
   { icon: <Headphones size={20} />, t: "Named CSM", d: "A real human in your timezone, not a ticket queue. SLA-backed response on plans over 50 seats." },
 ] as const;

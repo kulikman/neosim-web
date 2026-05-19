@@ -31,6 +31,13 @@ export const ROUTES = {
   login:  "/login",
   signup: "/signup",
 
+  // Utility
+  comingSoon: "/coming-soon",
+
+  // Dynamic (template only — append /{slug} or /{code} at call site)
+  coverageCountry: "/coverage",
+  blogPost: "/blog",
+
   // App — protected
   dashboard: "/dashboard",
 } as const;
