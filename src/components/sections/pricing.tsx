@@ -97,7 +97,7 @@ export function Pricing(): React.ReactElement {
                       <p className="mt-0.5 text-xs text-text-3">{row.sub}</p>
                     </div>
                     <p
-                      className="text-[19px] font-bold tracking-[-0.5px]"
+                      className="text-[16px] font-bold tracking-[-0.4px]"
                       style={{
                         color: row.hl ? "#fff" : "rgba(255,255,255,0.72)",
                         textDecoration: row.dim ? "line-through" : "none",

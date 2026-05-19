@@ -8,7 +8,23 @@
       "Bash(git remote *)",
       "Bash(unzip -l \"/Users/anton/Downloads/Neosim WEB.zip\")",
       "Bash(ls \"/Users/anton/Downloads/\" | grep -i neosim)",
-      "Bash(mkdir -p /Users/DEV/TEMLATES/Open-design-kit/design-systems/my-project)"
+      "Bash(mkdir -p /Users/DEV/TEMLATES/Open-design-kit/design-systems/my-project)",
+      "mcp__MCP_DOCKER__browser_navigate",
+      "Bash(xargs ls -la)",
+      "Bash(pnpm typecheck *)",
+      "Bash(pnpm tsc *)",
+      "Bash(pnpm lint *)",
+      "mcp__Claude_Preview__preview_start",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__computer",
+      "Bash(cp \"/Users/anton/Downloads/NeoSIM Landing.html\" /Users/DEV/Neosim/neosim-web/public/design-preview.html && echo \"copied\")",
+      "mcp__Claude_in_Chrome__navigate",
+      "Bash(cat /tmp/design_nav.js)",
+      "Bash(sed -i '' 's/text-\\\\[24px\\\\] font-extrabold tracking-tight/text-[20px] font-extrabold tracking-tight/' /Users/DEV/Neosim/neosim-web/src/components/sections/how-it-works.tsx)",
+      "Bash(sed -i '' 's/text-\\\\[76px\\\\] font-black/text-[64px] font-black/' /Users/DEV/Neosim/neosim-web/src/components/sections/how-it-works.tsx)",
+      "Bash(sed -i '' 's/text-\\\\[17px\\\\] font-bold/text-[15px] font-bold/' /Users/DEV/Neosim/neosim-web/src/components/sections/wallet.tsx)",
+      "Bash(sed -i '' 's/text-\\\\[19px\\\\] font-extrabold/text-[16px] font-extrabold/' /Users/DEV/Neosim/neosim-web/src/components/sections/trust-block.tsx)",
+      "Bash(sed -i '' 's/text-\\\\[19px\\\\] font-bold tracking-\\\\[-0\\\\.5px\\\\]/text-[16px] font-bold tracking-[-0.4px]/' /Users/DEV/Neosim/neosim-web/src/components/sections/pricing.tsx)"
     ]
   }
 }

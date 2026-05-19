@@ -116,7 +116,7 @@ export function HowItWorks(): React.ReactElement {
                 <div className="relative">
                   {/* Big step number */}
                   <p
-                    className="mb-6 text-[76px] font-black leading-none tracking-[-4px]"
+                    className="mb-6 text-[64px] font-black leading-none tracking-[-4px]"
                     style={{
                       background: "linear-gradient(135deg, #007fff, rgba(0,127,255,0.3))",
                       WebkitBackgroundClip: "text",
@@ -125,7 +125,7 @@ export function HowItWorks(): React.ReactElement {
                   >
                     {step.n}
                   </p>
-                  <h3 className="mb-4 text-[24px] font-extrabold tracking-tight">{step.title}</h3>
+                  <h3 className="mb-4 text-[20px] font-extrabold tracking-tight">{step.title}</h3>
                   <p className="text-base leading-7 text-text-2">{step.body}</p>
 
                   {/* Tags */}

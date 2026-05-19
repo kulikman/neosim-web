@@ -106,7 +106,7 @@ export function Nav(): React.ReactElement {
             gap: 10,
             color: "#fff",
             fontWeight: 800,
-            fontSize: 22,
+            fontSize: 19,
             letterSpacing: "-0.5px",
             textDecoration: "none",
           }}

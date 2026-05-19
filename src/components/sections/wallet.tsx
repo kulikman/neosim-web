@@ -399,7 +399,7 @@ export function Wallet(): React.ReactElement {
               <span className="icon-chip mb-5 inline-flex">
                 <Icon className="size-5" />
               </span>
-              <p className="mb-2 text-[17px] font-bold">{title}</p>
+              <p className="mb-2 text-[15px] font-bold">{title}</p>
               <p className="text-sm leading-relaxed text-text-2">{body}</p>
             </div>
           ))}

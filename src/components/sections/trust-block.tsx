@@ -23,7 +23,7 @@ export function TrustBlock(): React.ReactElement {
                 <p className="font-mono text-[11px] uppercase tracking-widest text-text-3">
                   Travelers connected today
                 </p>
-                <p className="text-[19px] font-extrabold leading-tight tracking-tight text-white">
+                <p className="text-[16px] font-extrabold leading-tight tracking-tight text-white">
                   across 150+ countries
                 </p>
               </div>
