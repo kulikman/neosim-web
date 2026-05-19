@@ -14,7 +14,11 @@ const STEP_TAGS = [
   ["Pay per GB", "Daily cap", "Never expires"],
 ] as const;
 
-export function HowItWorks(): React.ReactElement {
+interface HowItWorksProps {
+  hideHeader?: boolean;
+}
+
+export function HowItWorks({ hideHeader = false }: HowItWorksProps): React.ReactElement {
   const [active, setActive] = useState(0);
 
   return (
@@ -29,6 +33,7 @@ export function HowItWorks(): React.ReactElement {
 
       <div className="relative mx-auto max-w-[1140px] px-5 sm:px-8">
         {/* Header */}
+        {!hideHeader && (
         <div className="mb-16 flex flex-wrap items-end justify-between gap-8">
           <div>
             <p className="caption mb-4 text-[#66b7ff]">How it works</p>
@@ -53,6 +58,7 @@ export function HowItWorks(): React.ReactElement {
             </Link>
           </div>
         </div>
+        )}
 
         {/* Interactive steps grid */}
         <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
