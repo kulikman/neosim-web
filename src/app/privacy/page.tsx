@@ -49,7 +49,7 @@ export default function PrivacyPage(): React.ReactElement {
           <ArrowLeft size={14} /> Back to home
         </Link>
         <p className="caption" style={{ color: "#66b7ff", marginBottom: 16 }}>Legal</p>
-        <h1 className="h-1" style={{ margin: 0, marginBottom: 16 }}>Privacy Policy</h1>
+        <h1 className="ty-1" style={{ margin: 0, marginBottom: 16 }}>Privacy Policy</h1>
         <p className="lead" style={{ marginBottom: 48, maxWidth: 640 }}>
           Last updated January 2026. Plain-English summary at the top of each section.
         </p>
@@ -62,7 +62,7 @@ export default function PrivacyPage(): React.ReactElement {
                   {String(i + 1).padStart(2, "0")}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <h2 className="h-4" style={{ margin: 0, marginBottom: 12 }}>{s.t}</h2>
+                  <h2 className="ty-4" style={{ margin: 0, marginBottom: 12 }}>{s.t}</h2>
                   <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(0,127,255,0.08)", border: "1px solid rgba(0,127,255,0.2)", marginBottom: 12 }}>
                     <span style={{ fontSize: 11, fontWeight: 700, color: "#66b7ff", textTransform: "uppercase", letterSpacing: "0.05em" }}>Plain-English</span>
                     <p style={{ fontSize: 14, color: "var(--text-2)", margin: "4px 0 0" }}>{s.short}</p>

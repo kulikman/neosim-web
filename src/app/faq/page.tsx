@@ -25,7 +25,7 @@ export default function FaqPage(): React.ReactElement {
             <ArrowLeft size={14} /> Back to home
           </Link>
           <p className="caption" style={{ color: "#66b7ff", marginBottom: 16 }}>FAQ</p>
-          <h1 className="h-1" style={{ margin: 0, marginBottom: 16 }}>
+          <h1 className="ty-1" style={{ margin: 0, marginBottom: 16 }}>
             The <span className="gradient-text">small print</span>, made plain.
           </h1>
           <p className="lead" style={{ marginBottom: 0, maxWidth: 560 }}>

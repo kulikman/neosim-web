@@ -86,7 +86,7 @@ export function Footer(): React.ReactElement {
             }}
           >
             <div>
-              <h2 className="h-1" style={{ margin: 0, marginBottom: 16 }}>
+              <h2 className="ty-1" style={{ margin: 0, marginBottom: 16 }}>
                 Your next trip<br />
                 <span className="gradient-text">starts on NeoSIM</span>
               </h2>

@@ -22,7 +22,7 @@ export default function ContactPage(): React.ReactElement {
           <ArrowLeft size={14} /> Back to home
         </Link>
         <p className="caption" style={{ color: "#66b7ff", marginBottom: 16 }}>Support</p>
-        <h1 className="h-1" style={{ margin: 0, marginBottom: 16 }}>
+        <h1 className="ty-1" style={{ margin: 0, marginBottom: 16 }}>
           We&apos;re here<br />
           <span className="gradient-text">24 / 7.</span>
         </h1>
@@ -35,7 +35,7 @@ export default function ContactPage(): React.ReactElement {
             <span className="icon-chip" style={{ marginBottom: 20, display: "inline-flex" }}>
               <MessageCircle className="size-5" />
             </span>
-            <h2 className="h-3" style={{ marginBottom: 8 }}>Live chat</h2>
+            <h2 className="ty-3" style={{ marginBottom: 8 }}>Live chat</h2>
             <p className="body-sm" style={{ marginBottom: 20, color: "var(--text-3)" }}>
               Open the app or click the chat button on any page. Available around the clock.
             </p>
@@ -62,7 +62,7 @@ export default function ContactPage(): React.ReactElement {
             <span className="icon-chip" style={{ marginBottom: 20, display: "inline-flex" }}>
               <Mail className="size-5" />
             </span>
-            <h2 className="h-3" style={{ marginBottom: 8 }}>Email</h2>
+            <h2 className="ty-3" style={{ marginBottom: 8 }}>Email</h2>
             <p className="body-sm" style={{ marginBottom: 20, color: "var(--text-3)" }}>
               For account issues, billing questions, and detailed technical support.
             </p>

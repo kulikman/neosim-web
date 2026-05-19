@@ -24,7 +24,11 @@
       "Bash(sed -i '' 's/text-\\\\[76px\\\\] font-black/text-[64px] font-black/' /Users/DEV/Neosim/neosim-web/src/components/sections/how-it-works.tsx)",
       "Bash(sed -i '' 's/text-\\\\[17px\\\\] font-bold/text-[15px] font-bold/' /Users/DEV/Neosim/neosim-web/src/components/sections/wallet.tsx)",
       "Bash(sed -i '' 's/text-\\\\[19px\\\\] font-extrabold/text-[16px] font-extrabold/' /Users/DEV/Neosim/neosim-web/src/components/sections/trust-block.tsx)",
-      "Bash(sed -i '' 's/text-\\\\[19px\\\\] font-bold tracking-\\\\[-0\\\\.5px\\\\]/text-[16px] font-bold tracking-[-0.4px]/' /Users/DEV/Neosim/neosim-web/src/components/sections/pricing.tsx)"
+      "Bash(sed -i '' 's/text-\\\\[19px\\\\] font-bold tracking-\\\\[-0\\\\.5px\\\\]/text-[16px] font-bold tracking-[-0.4px]/' /Users/DEV/Neosim/neosim-web/src/components/sections/pricing.tsx)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'feat: unified blur system across all glass elements *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'fix: dropdown blur 52px → 20px to match nav dropdown style *)"
     ]
   }
 }

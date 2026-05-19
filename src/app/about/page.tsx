@@ -24,7 +24,7 @@ export default function AboutPage(): React.ReactElement {
             <ArrowLeft size={14} /> Back to home
           </Link>
           <p className="caption" style={{ color: "#66b7ff", marginBottom: 16 }}>About</p>
-          <h1 className="h-1" style={{ margin: 0, marginBottom: 24 }}>
+          <h1 className="ty-1" style={{ margin: 0, marginBottom: 24 }}>
             Built for travelers.<br />
             <span className="gradient-text">Powered by 2SkyMobile.</span>
           </h1>

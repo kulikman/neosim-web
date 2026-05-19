@@ -257,31 +257,31 @@
   /* ─── Container — overrides Tailwind's default 1280px ───────────── */
 
   /* ─── Typography ─────────────────────────────────────────────────── */
-  .h-display {
+  .ty-display {
     font-size: clamp(36px, 4.6vw, 66px);
     font-weight: 900;
     line-height: 1;
     letter-spacing: -2px;
   }
-  .h-1 {
+  .ty-1 {
     font-size: clamp(28px, 3.2vw, 48px);
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -1px;
   }
-  .h-2 {
+  .ty-2 {
     font-size: clamp(22px, 2.8vw, 38px);
     font-weight: 800;
     line-height: 1.1;
     letter-spacing: -0.7px;
   }
-  .h-3 {
+  .ty-3 {
     font-size: clamp(18px, 2vw, 28px);
     font-weight: 800;
     line-height: 1.15;
     letter-spacing: -0.4px;
   }
-  .h-4 {
+  .ty-4 {
     font-size: 16px;
     font-weight: 700;
     line-height: 1.25;

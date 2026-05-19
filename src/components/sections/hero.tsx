@@ -136,7 +136,7 @@ export function Hero(): React.ReactElement {
 
           {/* LEFT — headline + features */}
           <div>
-            <h1 className="h-display" style={{ margin: 0, marginBottom: 24 }}>
+            <h1 className="ty-display" style={{ margin: 0, marginBottom: 24 }}>
               One eSIM<br />
               <span className="gradient-text">150+ countries</span><br />
               Pay only for what you use
@@ -221,7 +221,7 @@ export function Hero(): React.ReactElement {
 
             <div style={{ position: "relative" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                <h3 className="h-3" style={{ margin: 0 }}>Build your plan</h3>
+                <h3 className="ty-3" style={{ margin: 0 }}>Build your plan</h3>
                 <span className="mono" style={{ color: "var(--mint)" }}>+ free eSIM</span>
               </div>
               <p className="body-sm" style={{ marginTop: 0, marginBottom: 26 }}>
@@ -371,7 +371,7 @@ export function Hero(): React.ReactElement {
         {/* Popular destinations */}
         <div style={{ marginTop: 64 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-            <h2 className="h-3" style={{ margin: 0, fontSize: 28, letterSpacing: "-0.6px" }}>Popular this month</h2>
+            <h2 className="ty-3" style={{ margin: 0, fontSize: 28, letterSpacing: "-0.6px" }}>Popular this month</h2>
             <div style={{ display: "flex", gap: 10 }}>
               <button className="btn-icon" style={{ width: 40, height: 40, borderRadius: 999 }} aria-label="Previous">
                 <ChevronLeft size={16} />
@@ -392,7 +392,7 @@ export function Hero(): React.ReactElement {
                 <div className="dest-content" style={{ justifyContent: "flex-end", gap: 0 }}>
                   <div style={{ marginBottom: 12 }}>
                     <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", fontWeight: 500 }}>{d.country}</div>
-                    <div className="h-4" style={{ marginTop: 2 }}>{d.city}</div>
+                    <div className="ty-4" style={{ marginTop: 2 }}>{d.city}</div>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
                     <div

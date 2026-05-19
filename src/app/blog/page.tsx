@@ -24,7 +24,7 @@ export default function BlogPage(): React.ReactElement {
             <ArrowLeft size={14} /> Back to home
           </Link>
           <p className="caption" style={{ color: "#66b7ff", marginBottom: 16 }}>Blog</p>
-          <h1 className="h-1" style={{ margin: 0, marginBottom: 16 }}>
+          <h1 className="ty-1" style={{ margin: 0, marginBottom: 16 }}>
             Travel smarter.<br />
             <span className="gradient-text">Stay connected.</span>
           </h1>
@@ -37,7 +37,7 @@ export default function BlogPage(): React.ReactElement {
             style={{ padding: "48px 40px", textAlign: "center", maxWidth: 540 }}
           >
             <p style={{ fontSize: 32, marginBottom: 16 }}>✍️</p>
-            <h2 className="h-3" style={{ marginBottom: 12 }}>Coming soon</h2>
+            <h2 className="ty-3" style={{ marginBottom: 12 }}>Coming soon</h2>
             <p className="body" style={{ color: "var(--text-3)" }}>
               Our first articles are in the works. Subscribe to get notified when we publish.
             </p>
