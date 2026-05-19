@@ -260,9 +260,9 @@ export function Hero(): React.ReactElement {
                   <div
                     style={{
                       position: "absolute", top: "calc(100% + 8px)", left: 0, right: 0, zIndex: 20,
-                      background: "rgba(5,12,26,0.88)", backdropFilter: "blur(52px)", WebkitBackdropFilter: "blur(52px)",
-                      border: "1px solid rgba(255,255,255,0.10)", borderRadius: 18,
-                      padding: 8, maxHeight: 320, overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.55)",
+                      background: "rgba(10,15,30,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+                      border: "1px solid rgba(255,255,255,0.08)", borderRadius: 18,
+                      padding: 8, maxHeight: 320, overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
                     }}
                   >
                     {COUNTRIES.map((c) => (
