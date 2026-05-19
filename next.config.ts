@@ -8,12 +8,7 @@ const nextConfig: NextConfig = {
   // Remote images must be explicitly allowed. Add your CDN / Supabase storage host here.
   images: {
     remotePatterns: [
-      // Example: Supabase public storage
-      // {
-      //   protocol: "https",
-      //   hostname: "<project-id>.supabase.co",
-      //   pathname: "/storage/v1/object/public/**",
-      // },
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
 

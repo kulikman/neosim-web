@@ -1,16 +1,40 @@
 export const siteConfig = {
-  name: "Neosim",
+  name: "NeoSIM",
   description:
-    "Neosim — your digital mobile operator for travel. One eSIM, 150+ countries, pay per MB.",
-  url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    "One eSIM. 150+ countries. Pay per megabyte — only when you use data. Auto-switches operators as you cross borders.",
+  url: process.env.NEXT_PUBLIC_APP_URL ?? "https://neosim.io",
   ogImage: "/og-image.jpg",
   links: {
-    github: "https://github.com/kulikman/neosim",
+    appStore: "#",
+    playStore: "#",
   },
-  // Navigation links rendered in the Header.
-  // Only add routes that have a corresponding page.tsx.
+  /** Primary nav links — rendered in the marketing Nav component. */
   nav: [
-    { title: "Home", href: "/" },
-    { title: "Dashboard", href: "/dashboard" },
+    { title: "Coverage",      href: "/coverage" },
+    { title: "How it works",  href: "/how-it-works" },
+    { title: "Business",      href: "/business" },
+    { title: "Blog",          href: "/blog" },
   ],
+  /** Footer column structure */
+  footer: {
+    product: [
+      { title: "Coverage",     href: "/coverage" },
+      { title: "How it works", href: "/how-it-works" },
+      { title: "Get eSIM",     href: "/get-esim" },
+      { title: "Top up",       href: "/topup" },
+      { title: "App",          href: "/app-download" },
+    ],
+    company: [
+      { title: "About",    href: "/about" },
+      { title: "Blog",     href: "/blog" },
+      { title: "Business", href: "/business" },
+      { title: "Partners", href: "/partners" },
+      { title: "Contact",  href: "/contact" },
+    ],
+    legal: [
+      { title: "Privacy", href: "/privacy" },
+      { title: "Terms",   href: "/terms" },
+      { title: "FAQ",     href: "/faq" },
+    ],
+  },
 } as const;

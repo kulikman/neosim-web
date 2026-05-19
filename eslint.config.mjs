@@ -37,7 +37,7 @@ const eslintConfig = defineConfig([
       "import/no-default-export": "error",
     },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "Kit/**"]),
 ]);
 
 export default eslintConfig;

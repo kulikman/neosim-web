@@ -1,25 +1,38 @@
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "Neosim Web";
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "NeoSIM";
 
 /**
  * Canonical route map.
  *
  * Rules:
  *   - Every nested route must have a navigable parent (no dead intermediate URLs).
- *   - Use descriptive nouns as segments, not abbreviations or numeric IDs alone.
- *   - Dynamic segments: `/projects/[id]`, never `/p/[id]`.
- *   - Add new routes here and in `SEGMENT_LABELS` (breadcrumbs.tsx).
+ *   - Add routes here ONLY when the corresponding page.tsx exists.
+ *   - Dynamic segments: `/coverage/[code]`, never `/c/[code]`.
  */
 export const ROUTES = {
   home: "/",
+
+  // Marketing
+  coverage:     "/coverage",
+  howItWorks:   "/how-it-works",
+  getEsim:      "/get-esim",
+  getEsimSuccess: "/get-esim/success",
+  business:     "/business",
+  partners:     "/partners",
+  blog:         "/blog",
+  faq:          "/faq",
+  about:        "/about",
+  topup:        "/topup",
+  contact:      "/contact",
+  appDownload:  "/app-download",
+  privacy:      "/privacy",
+  terms:        "/terms",
+
   // Auth
-  login: "/login",
+  login:  "/login",
   signup: "/signup",
-  // App — top-level routes that exist as page.tsx
+
+  // App — protected
   dashboard: "/dashboard",
-  // User-facing Neosim sections — add here only when page.tsx exists.
-  // ⚠️ Do NOT add a route here until src/app/{section}/page.tsx exists.
-  esim: "/esim",
-  usage: "/usage",
-  billing: "/billing",
-  support: "/support",
 } as const;
+
+export type Route = (typeof ROUTES)[keyof typeof ROUTES];
