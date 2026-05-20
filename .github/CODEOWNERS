@@ -1,0 +1,16 @@
+# CODEOWNERS — automatic review requests on pull requests.
+# Format: <path-pattern>  <@github-username>
+
+# Default: everything requires review from the repo owner.
+*                           @kulikman
+
+# Security-critical paths require explicit review.
+src/proxy.ts                @kulikman
+src/lib/supabase/           @kulikman
+src/lib/env.ts              @kulikman
+supabase/migrations/        @kulikman
+
+# CI / deployment config
+.github/                    @kulikman
+next.config.ts              @kulikman
+vercel.json                 @kulikman

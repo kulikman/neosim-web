@@ -28,7 +28,13 @@
       "Bash(git add *)",
       "Bash(git commit -m 'feat: unified blur system across all glass elements *)",
       "Bash(git push *)",
-      "Bash(git commit -m 'fix: dropdown blur 52px → 20px to match nav dropdown style *)"
+      "Bash(git commit -m 'fix: dropdown blur 52px → 20px to match nav dropdown style *)",
+      "mcp__Claude_in_Chrome__select_browser",
+      "mcp__Claude_in_Chrome__get_page_text",
+      "Bash(mkdir -p /Users/DEV/Neosim/neosim-web/src/app/coming-soon /Users/DEV/Neosim/neosim-web/src/app/blog/\\\\[slug\\\\] /Users/DEV/Neosim/neosim-web/src/app/coverage/\\\\[country\\\\])",
+      "Bash(gh api *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm exec *)"
     ]
   }
 }
