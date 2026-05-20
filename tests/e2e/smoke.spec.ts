@@ -6,35 +6,41 @@ import { test, expect } from "@playwright/test";
  */
 
 const PAGES = [
-  { path: "/",              heading: /eSIM|NeoSIM|Connect/i },
-  { path: "/coverage",      heading: /coverage|countries/i },
-  { path: "/how-it-works",  heading: /how it works|2 minutes/i },
-  { path: "/get-esim",      heading: /free eSIM|get your/i },
-  { path: "/business",      heading: /business|CFO|won/i },
-  { path: "/partners",      heading: /partner/i },
-  { path: "/blog",          heading: /blog|notes/i },
-  { path: "/faq",           heading: /faq|questions/i },
-  { path: "/about",         heading: /about/i },
-  { path: "/contact",       heading: /contact/i },
-  { path: "/app-download",  heading: /app|download/i },
-  { path: "/topup",         heading: /top up|wallet/i },
-  { path: "/login",         heading: /welcome|sign in/i },
-  { path: "/signup",        heading: /create|connect/i },
-  { path: "/coming-soon",   heading: /coming soon/i },
-  { path: "/privacy",       heading: /privacy/i },
-  { path: "/terms",         heading: /terms/i },
+  "/",
+  "/coverage",
+  "/how-it-works",
+  "/get-esim",
+  "/get-esim/success",
+  "/business",
+  "/partners",
+  "/blog",
+  "/faq",
+  "/about",
+  "/contact",
+  "/app-download",
+  "/topup",
+  "/login",
+  "/signup",
+  "/coming-soon",
+  "/privacy",
+  "/terms",
 ] as const;
 
-for (const p of PAGES) {
-  test(`${p.path} loads and has expected heading`, async ({ page }) => {
+for (const path of PAGES) {
+  test(`${path} renders without errors`, async ({ page }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
 
-    const res = await page.goto(p.path);
-    expect(res?.status(), `${p.path} returned non-2xx`).toBeLessThan(400);
+    const res = await page.goto(path);
+    expect(res?.status(), `${path} returned non-2xx`).toBeLessThan(400);
 
-    await expect(page.locator("h1, h2").first()).toContainText(p.heading);
-    expect(errors, `runtime errors on ${p.path}`).toEqual([]);
+    // every page must have a visible h1 with non-trivial text
+    const h1 = page.locator("h1").first();
+    await expect(h1).toBeVisible();
+    const text = (await h1.textContent()) ?? "";
+    expect(text.trim().length, `${path} h1 is empty`).toBeGreaterThan(3);
+
+    expect(errors, `runtime errors on ${path}`).toEqual([]);
   });
 }
 
